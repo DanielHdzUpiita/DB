@@ -22,6 +22,7 @@ public class Administrador extends javax.swing.JFrame {
     public Administrador() {
         initComponents();
         iniciarEscolar(0,"","");
+        iniciarConjunto();
         La_AD_AA_Error.setVisible(false);
         Ch_AD_EA_Color.setEnabled(false);
         Bu_AD_EA_Edita.setVisible(false);
@@ -132,6 +133,31 @@ public class Administrador extends javax.swing.JFrame {
             Logger.getLogger(Vendedor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void iniciarConjunto()
+    {
+        try {
+            con.iniciar();
+            ArrayList<VistaPrendas> pren = consultar("");
+            con.detener();
+            choice1.add("");
+            for(VistaPrendas p : pren){
+                choice1.add(p.tipoPrenda);
+//                choice2.add(p.color);
+//                choice3.add(p.talla);
+//                choice4.add(p.tela);
+//                choice5.add(p.marca);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(Vendedor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void getDatos(){
+        String nEscuela = TF_AD_FC_NEscu.getText();
+        String tUniforme = TF_AD_FC_TUnif.getText();
+        String talla = TF_AD_FC_TConj.getText();
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -185,21 +211,16 @@ public class Administrador extends javax.swing.JFrame {
         TF_AD_FC_TUnif = new javax.swing.JTextField();
         TF_AD_FC_TConj = new javax.swing.JTextField();
         TF_AD_FC_PTota = new javax.swing.JTextField();
-        SP_AD_FC_TPren = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        SP_AD_FC_Color = new javax.swing.JScrollPane();
-        jList3 = new javax.swing.JList();
-        SP_AD_FC_Talla = new javax.swing.JScrollPane();
-        jList4 = new javax.swing.JList();
-        SP_AD_FC_Tela = new javax.swing.JScrollPane();
-        jList5 = new javax.swing.JList();
-        SP_AD_FC_Marca = new javax.swing.JScrollPane();
-        jList6 = new javax.swing.JList();
         SP_AD_FC_AConj = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         Bu_AD_FC_AArti = new javax.swing.JButton();
         Bu_AD_FC_QArti = new javax.swing.JButton();
         Bu_AD_FC_AConj = new javax.swing.JButton();
+        choice1 = new java.awt.Choice();
+        choice2 = new java.awt.Choice();
+        choice3 = new java.awt.Choice();
+        choice4 = new java.awt.Choice();
+        choice5 = new java.awt.Choice();
         PanelEditarArticulo = new javax.swing.JPanel();
         La_AD_EA_Gener = new javax.swing.JLabel();
         La_AD_EA_TPren = new javax.swing.JLabel();
@@ -481,38 +502,6 @@ public class Administrador extends javax.swing.JFrame {
         PanelFormarConjunto.add(TF_AD_FC_PTota);
         TF_AD_FC_PTota.setBounds(396, 485, 70, 25);
 
-        jList2.setAutoscrolls(false);
-        SP_AD_FC_TPren.setViewportView(jList2);
-
-        PanelFormarConjunto.add(SP_AD_FC_TPren);
-        SP_AD_FC_TPren.setBounds(26, 193, 120, 91);
-
-        jList3.setMaximumSize(null);
-        jList3.setMinimumSize(null);
-        jList3.setPreferredSize(null);
-        SP_AD_FC_Color.setViewportView(jList3);
-
-        PanelFormarConjunto.add(SP_AD_FC_Color);
-        SP_AD_FC_Color.setBounds(154, 193, 120, 91);
-
-        jList4.setMaximumSize(null);
-        jList4.setMinimumSize(null);
-        jList4.setPreferredSize(null);
-        SP_AD_FC_Talla.setViewportView(jList4);
-
-        PanelFormarConjunto.add(SP_AD_FC_Talla);
-        SP_AD_FC_Talla.setBounds(282, 193, 120, 91);
-
-        SP_AD_FC_Tela.setViewportView(jList5);
-
-        PanelFormarConjunto.add(SP_AD_FC_Tela);
-        SP_AD_FC_Tela.setBounds(410, 193, 120, 91);
-
-        SP_AD_FC_Marca.setViewportView(jList6);
-
-        PanelFormarConjunto.add(SP_AD_FC_Marca);
-        SP_AD_FC_Marca.setBounds(536, 193, 120, 91);
-
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -533,7 +522,7 @@ public class Administrador extends javax.swing.JFrame {
         Bu_AD_FC_AArti.setForeground(new java.awt.Color(255, 0, 0));
         Bu_AD_FC_AArti.setText("Agregar Articulo");
         PanelFormarConjunto.add(Bu_AD_FC_AArti);
-        Bu_AD_FC_AArti.setBounds(494, 295, 167, 27);
+        Bu_AD_FC_AArti.setBounds(490, 220, 167, 27);
 
         Bu_AD_FC_QArti.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_AD_FC_QArti.setForeground(new java.awt.Color(255, 0, 0));
@@ -546,6 +535,27 @@ public class Administrador extends javax.swing.JFrame {
         Bu_AD_FC_AConj.setText("Agregar Conjunto");
         PanelFormarConjunto.add(Bu_AD_FC_AConj);
         Bu_AD_FC_AConj.setBounds(490, 480, 171, 27);
+
+        choice1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                choice1ItemStateChanged(evt);
+            }
+        });
+        choice1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                choice1PropertyChange(evt);
+            }
+        });
+        PanelFormarConjunto.add(choice1);
+        choice1.setBounds(30, 190, 120, 20);
+        PanelFormarConjunto.add(choice2);
+        choice2.setBounds(160, 190, 120, 20);
+        PanelFormarConjunto.add(choice3);
+        choice3.setBounds(290, 190, 120, 20);
+        PanelFormarConjunto.add(choice4);
+        choice4.setBounds(420, 190, 120, 20);
+        PanelFormarConjunto.add(choice5);
+        choice5.setBounds(550, 190, 110, 20);
 
         jTabbedPane1.addTab("Formar Conjunto", PanelFormarConjunto);
 
@@ -1212,7 +1222,95 @@ public class Administrador extends javax.swing.JFrame {
         }
         Bu_AD_EA_Elimi.setVisible(false);
     }//GEN-LAST:event_Bu_AD_EA_ElimiActionPerformed
-           
+
+    private void choice1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_choice1PropertyChange
+        con.iniciar();
+        String data = choice1.getSelectedItem();
+        ArrayList<VistaPrendas> prendas = consultar(" Tipo_de_prenda = '"+data+"'");
+        enabledChoices1(false);
+        limpiarChoices1();
+        iniciarChoices1();
+        enabledChoices1(true);
+        for(VistaPrendas vp : prendas){
+            choice2.add(vp.color);
+            choice3.add(vp.talla);
+            choice4.add(vp.tela);
+            choice5.add(vp.marca);
+        }
+        con.detener();
+    }//GEN-LAST:event_choice1PropertyChange
+
+    private void choice1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice1ItemStateChanged
+        con.iniciar();
+        String data = choice1.getSelectedItem();
+        ArrayList<VistaPrendas> prendas = consultar(" Tipo_de_prenda = '" + data + "'");
+        enabledChoices1(false);
+        limpiarChoices1();
+        iniciarChoices1();
+        enabledChoices1(true);
+        for (VistaPrendas vp : prendas) {
+            choice2.add(vp.color);
+            choice3.add(vp.talla);
+            choice4.add(vp.tela);
+            choice5.add(vp.marca);
+        }
+        con.detener();
+    }//GEN-LAST:event_choice1ItemStateChanged
+
+    public void iniciarChoices1()
+    {
+        choice2.add("");
+        choice3.add("");
+        choice4.add("");
+        choice5.add("");
+    }
+    public void limpiarChoices1()
+    {
+        choice2.removeAll();
+        choice3.removeAll();
+        choice4.removeAll();
+        choice5.removeAll();
+    }
+    public void enabledChoices1(Boolean b)
+    {
+        choice2.setEnabled(b);
+        choice3.setEnabled(b);
+        choice4.setEnabled(b);
+        choice5.setEnabled(b);
+    }
+    public ArrayList<VistaPrendas> consultar(String cond)
+    {
+        ArrayList<VistaPrendas> res = new ArrayList<>();
+        
+        String query = "";
+        if(cond.equals(""))
+        {
+            query = "select * from prendas";
+        }
+        else
+        {
+            query = "select * from prendas where "+cond;
+        }
+        try {
+            con.iniciar();
+            con.consultar(query);
+            ResultSet rsPrenda = con.resultado;
+            while(rsPrenda.next())
+            {
+                VistaPrendas aux = new VistaPrendas();
+                aux.tipoPrenda = rsPrenda.getString("Tipo_de_Prenda");
+                aux.color = rsPrenda.getString("Color");
+                aux.talla = rsPrenda.getString("Talla");
+                aux.tela = rsPrenda.getString("Tela");
+                aux.marca = rsPrenda.getString("Marca");
+                res.add(aux);
+            }
+            con.detener();
+        } catch (SQLException ex) {
+            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -1304,11 +1402,6 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JPanel PanelUsuarios;
     private javax.swing.JScrollPane SP_AD_EA_Tabla;
     private javax.swing.JScrollPane SP_AD_FC_AConj;
-    private javax.swing.JScrollPane SP_AD_FC_Color;
-    private javax.swing.JScrollPane SP_AD_FC_Marca;
-    private javax.swing.JScrollPane SP_AD_FC_TPren;
-    private javax.swing.JScrollPane SP_AD_FC_Talla;
-    private javax.swing.JScrollPane SP_AD_FC_Tela;
     private javax.swing.JTextField TF_AD_AA_Canti;
     private javax.swing.JTextField TF_AD_AA_Color;
     private javax.swing.JTextField TF_AD_AA_Costo;
@@ -1325,8 +1418,13 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.ButtonGroup buttonGroup4;
+    private java.awt.Choice choice1;
+    private java.awt.Choice choice2;
     private java.awt.Choice choice21;
     private java.awt.Choice choice22;
+    private java.awt.Choice choice3;
+    private java.awt.Choice choice4;
+    private java.awt.Choice choice5;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton5;
@@ -1337,11 +1435,6 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel44;
-    private javax.swing.JList jList2;
-    private javax.swing.JList jList3;
-    private javax.swing.JList jList4;
-    private javax.swing.JList jList5;
-    private javax.swing.JList jList6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
