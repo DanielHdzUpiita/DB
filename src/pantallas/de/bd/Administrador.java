@@ -24,7 +24,6 @@ public class Administrador extends javax.swing.JFrame {
         iniciarEscolar(0,"","");
         La_AD_AA_Error.setVisible(false);
         Ch_AD_EA_Color.setEnabled(false);
-        //Bu_AD_EA_Busca.setEnabled(false);
         Bu_AD_EA_Edita.setVisible(false);
         Bu_AD_EA_Cance.setVisible(false);
         Bu_AD_EA_Elimi.setVisible(false);
@@ -615,6 +614,11 @@ public class Administrador extends javax.swing.JFrame {
         Bu_AD_EA_Elimi.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_AD_EA_Elimi.setForeground(new java.awt.Color(255, 0, 0));
         Bu_AD_EA_Elimi.setText("Eliminar");
+        Bu_AD_EA_Elimi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bu_AD_EA_ElimiActionPerformed(evt);
+            }
+        });
         PanelEditarArticulo.add(Bu_AD_EA_Elimi, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 450, -1, -1));
 
         jTable3.setModel(modeloEditarArticulo);
@@ -924,7 +928,6 @@ public class Administrador extends javax.swing.JFrame {
                 while(comprobacion.next()){
                     flag = flag + 1;
                 }
-                //System.out.println(flag);
                 // Insertar un nuevo dato en una tabla de la base de datos
                 if (flag == 0){
                     int insertado = consulta.executeUpdate(ArtCatalogo);
@@ -952,6 +955,9 @@ public class Administrador extends javax.swing.JFrame {
                 if(flag2 == 0){
                     int insertadoPrenda = consulta.executeUpdate(ArtPrenda);
                     if(insertadoPrenda == 1){
+                        La_AD_AA_Error.setText("Se ha insertado una prenda al catalogo");
+                        La_AD_AA_Error.setForeground(Color.blue);
+                        La_AD_AA_Error.setVisible(true);
                         TF_AD_AA_TPren.setText("");
                         TF_AD_AA_Color.setText("");
                         TF_AD_AA_Tela.setText("");
@@ -1116,18 +1122,9 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_TF_AD_AA_CantiFocusLost
 
     private void Bu_AD_EA_BuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_EA_BuscaActionPerformed
-        LinkedList old = modeloEditarArticulo.datos;
-        int a = old.size();
-        a--;
-        for(int i = a; i >= 0; i--)
-        {
-            modeloEditarArticulo.removeObject(i);
-        }
-        
         LinkedList datos1 = consultaEditP(CB_AD_EA_Gener.getSelectedItem().toString(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
         
-        for(Object v : datos1)
-        {
+        for(Object v : datos1){
             modeloEditarArticulo.addObject((Generica)v);
         }
         CB_AD_EA_Gener.setEnabled(false);
@@ -1142,11 +1139,10 @@ public class Administrador extends javax.swing.JFrame {
         LinkedList old = modeloEditarArticulo.datos;
         int a = old.size();
         a--;
-        for(int i = a; i >= 0; i--)
-        {
+        for(int i = a; i >= 0; i--){
             modeloEditarArticulo.removeObject(i);
         }
-        //CB_AD_EA_Gener.setSelectedIndex(0);
+        
         CB_AD_EA_Gener.setEnabled(true);
         Ch_AD_EA_TPren.setEnabled(true);
         if(Ch_AD_EA_Color.getSelectedItem().equals("") && !Ch_AD_EA_TPren.getSelectedItem().equals("")){
@@ -1159,33 +1155,23 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_Bu_AD_EA_CanceActionPerformed
 
     private void CB_AD_EA_GenerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CB_AD_EA_GenerActionPerformed
-        
         iniciarEscolar(CB_AD_EA_Gener.getSelectedIndex(),"","");
-        if(CB_AD_EA_Gener.getSelectedIndex()==0){}
-        else{
+        if(CB_AD_EA_Gener.getSelectedIndex()!=0){
             Ch_AD_EA_Color.setEnabled(false);
         }
-        //Bu_AD_EA_Busca.setEnabled(false);
     }//GEN-LAST:event_CB_AD_EA_GenerActionPerformed
 
     private void Ch_AD_EA_TPrenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_AD_EA_TPrenItemStateChanged
         iniciarEscolar(CB_AD_EA_Gener.getSelectedIndex(),Ch_AD_EA_TPren.getSelectedItem(),"");
         if(Ch_AD_EA_TPren.getSelectedItem().equals("")){
             Ch_AD_EA_Color.setEnabled(false);
-        }
-        else{
+        }else{
             Ch_AD_EA_Color.setEnabled(true);
         }
-        //Bu_AD_EA_Busca.setEnabled(false);
     }//GEN-LAST:event_Ch_AD_EA_TPrenItemStateChanged
 
     private void Ch_AD_EA_ColorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_AD_EA_ColorItemStateChanged
         iniciarEscolar(CB_AD_EA_Gener.getSelectedIndex(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
-        /*if(Ch_AD_EA_Color.getSelectedItem().equals("") || CB_AD_EA_Gener.getSelectedItem().equals("")){}
-        else{
-            Bu_AD_EA_Busca.setEnabled(true);
-        }*/
-        System.out.println("Ya termino");
     }//GEN-LAST:event_Ch_AD_EA_ColorItemStateChanged
 
     private void jTable3PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTable3PropertyChange
@@ -1194,13 +1180,38 @@ public class Administrador extends javax.swing.JFrame {
             if(obj2.Eliminar){
                 Bu_AD_EA_Elimi.setVisible(true);
                 break;
-            }
-            else
-            {
+            }else{
                 Bu_AD_EA_Elimi.setVisible(false);
             }
         }
     }//GEN-LAST:event_jTable3PropertyChange
+
+    private void Bu_AD_EA_ElimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_EA_ElimiActionPerformed
+        //System.out.println("Obtencion de ID Completada");
+        con.iniciar();
+        for(Object obj : modeloEditarArticulo.datos){
+            VistaPrendas obj2 = (VistaPrendas)obj;
+            if(obj2.Eliminar){
+                Bu_AD_EA_Elimi.setVisible(true);
+                String borrar = "ID_catalogo="+obj2.id+" and cantidad="+obj2.cantidad+" and costo="+obj2.costo+" and precio="+obj2.precio;
+               // System.out.println(borrar);
+                con.eliminar("prenda", borrar);
+                con.eliminar("catalogo_prendas", "ID = "+obj2.id);
+            }
+        }
+        con.detener();
+        LinkedList old = modeloEditarArticulo.datos;
+        int a = old.size();
+        a--;
+        for(int i = a; i >= 0; i--){
+            modeloEditarArticulo.removeObject(i);
+        }
+        LinkedList datos1 = consultaEditP(CB_AD_EA_Gener.getSelectedItem().toString(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
+        for(Object v : datos1){
+            modeloEditarArticulo.addObject((Generica)v);
+        }
+        Bu_AD_EA_Elimi.setVisible(false);
+    }//GEN-LAST:event_Bu_AD_EA_ElimiActionPerformed
            
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
