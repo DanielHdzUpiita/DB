@@ -993,6 +993,9 @@
                       <Connection code="modeloEditarArticulo" type="code"/>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="propertyChange" listener="java.beans.PropertyChangeListener" parameters="java.beans.PropertyChangeEvent" handler="jTable3PropertyChange"/>
+                  </Events>
                 </Component>
               </SubComponents>
             </Container>

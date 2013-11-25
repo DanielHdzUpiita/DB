@@ -14,6 +14,7 @@ public class VistaPrendas extends Generica {
     public float precio;
     public float costo;
     public int id;
+    public Boolean Eliminar = false;
     
     
     @Override
@@ -38,6 +39,8 @@ public class VistaPrendas extends Generica {
                 return precio;
             case 8:
                 return costo;
+            case 9:
+                return Eliminar;
             default:
                 return null;
         }
@@ -65,6 +68,8 @@ public class VistaPrendas extends Generica {
                 return float.class;
             case 8:
                 return float.class;
+            case 9:
+                return Boolean.class;
             default:
                 return Object.class;
         }
@@ -100,6 +105,9 @@ public class VistaPrendas extends Generica {
                 break;
             case 8:
                 costo = (float)obj;
+                break;
+            case 9:
+                Eliminar = (Boolean)obj;
                 break;
             default:
                 break;

@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 
 public class Administrador extends javax.swing.JFrame {
     ConexionBD con = new ConexionBD();
-    ModeloTabla1 modeloEditarArticulo = new ModeloTabla1(new String[] {"Tipo de Prenda","Genero","Color","Tela","Marca","Talla","Cantidad","Precio","Costo"});
+    ModeloTabla1 modeloEditarArticulo = new ModeloTabla1(new String[] {"Tipo de Prenda","Genero","Color","Tela","Marca","Talla","Cantidad","Precio","Costo","Eliminar"});
     
     public Administrador() {
         initComponents();
@@ -618,6 +618,11 @@ public class Administrador extends javax.swing.JFrame {
         PanelEditarArticulo.add(Bu_AD_EA_Elimi, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 450, -1, -1));
 
         jTable3.setModel(modeloEditarArticulo);
+        jTable3.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jTable3PropertyChange(evt);
+            }
+        });
         SP_AD_EA_Tabla.setViewportView(jTable3);
 
         PanelEditarArticulo.add(SP_AD_EA_Tabla, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 650, 200));
@@ -837,22 +842,21 @@ public class Administrador extends javax.swing.JFrame {
         LinkedList res = new LinkedList();
         try {
             con.iniciar();
-            if(Gener.equals("")){
-            }else{
-                Gener = " and Genero='"+Gener+"'";
-            }
-            if(TPren.equals("")){
-            }else{
-                TPren = " and Tipo_de_prenda ='"+TPren+"'";
-            }
-            if(Color.equals("")){
-            }else{
-                Color = " and Color ='"+Color+"'";
-            }
-            String query = Gener+TPren+Color;
-            if (!query.equals(""))
-            {
-                query = " where " + query;
+            String query = "";
+            if(!TPren.equals("") && !Color.equals("") && !Gener.equals("")){
+                query = " where Tipo_de_prenda ='"+TPren+"' and Color = '"+Color+"' and Genero = '"+Gener+"'";
+            }else if (!TPren.equals("") && !Color.equals("")){
+                query = " where Tipo_de_prenda ='"+TPren+"' and Color = '"+Color+"'";
+            }else if (!TPren.equals("") && !Gener.equals("")){
+                query = " where Tipo_de_prenda ='"+TPren+"' and Genero = '"+Gener+"'";
+            }else if (!Color.equals("") && !Gener.equals("")){
+                query = " where Color ='"+Color+"' and Genero = '"+Gener+"'";
+            }else if (!Gener.equals("")){
+                query = " where Genero = '"+Gener+"'";
+            }else if (!TPren.equals("")){
+                query = " where Tipo_de_prenda ='"+TPren+"'";
+            }else if (!Color.equals("")){
+                query = " where Color = '"+Color+"'";
             }
             con.consultar("select * from prendas"+query);            
             while(con.resultado.next())
@@ -1183,6 +1187,20 @@ public class Administrador extends javax.swing.JFrame {
         }*/
         System.out.println("Ya termino");
     }//GEN-LAST:event_Ch_AD_EA_ColorItemStateChanged
+
+    private void jTable3PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTable3PropertyChange
+        for(Object obj : modeloEditarArticulo.datos){
+            VistaPrendas obj2 = (VistaPrendas)obj;
+            if(obj2.Eliminar){
+                Bu_AD_EA_Elimi.setVisible(true);
+                break;
+            }
+            else
+            {
+                Bu_AD_EA_Elimi.setVisible(false);
+            }
+        }
+    }//GEN-LAST:event_jTable3PropertyChange
            
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
