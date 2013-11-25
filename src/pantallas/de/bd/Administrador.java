@@ -21,7 +21,10 @@ public class Administrador extends javax.swing.JFrame {
     
     public Administrador() {
         initComponents();
+        iniciarEscolar(0,"","");
         La_AD_AA_Error.setVisible(false);
+        Ch_AD_EA_Color.setEnabled(false);
+        //Bu_AD_EA_Busca.setEnabled(false);
         Bu_AD_EA_Edita.setVisible(false);
         Bu_AD_EA_Cance.setVisible(false);
         Bu_AD_EA_Elimi.setVisible(false);
@@ -37,6 +40,98 @@ public class Administrador extends javax.swing.JFrame {
         La_AD_AA_Tick6.setVisible(false);
         La_AD_AA_Tick7.setVisible(false);
         La_AD_AA_Tick8.setVisible(false);
+    }
+    public void iniciarEscolar(int genero, String TPren, String Color)
+    {
+        try {
+            con.iniciar();
+            String query= "";
+            if(!TPren.equals("") && !Color.equals("")){
+                query = " where Tipo_de_prenda ='"+TPren+"' and Color = '"+Color+"'";
+            }else if (!TPren.equals(""))
+            {
+                query = " where Tipo_de_prenda = '"+TPren+"'";
+            }
+            else if (!Color.equals("")){
+                query = " where Color = '"+Color+"'";
+            }
+            if(TPren.equals("")){
+                Ch_AD_EA_TPren.removeAll();
+                Ch_AD_EA_TPren.add("");
+            }
+            if(Color.equals("")){
+                Ch_AD_EA_Color.removeAll();
+                Ch_AD_EA_Color.add("");
+            }
+            if(genero == 0)
+                con.consultar("SELECT * FROM prendas "+query);
+            else{
+                String gen="";
+                if(genero == 1){
+                    gen = "'Escolar'";
+                }
+                else if(genero == 2){
+                    gen = "'De Vestir'";
+                }
+                if(!query.equals(""))
+                {
+                    con.consultar("SELECT * FROM prendas "+query+" and genero="+gen);
+                }
+                else
+                {
+                    con.consultar("SELECT * FROM prendas where genero = "+gen);
+                }
+            }
+            ResultSet rsPrenda = con.resultado;
+            ArrayList<VistaPrendas> pren = new ArrayList<>();
+            while(rsPrenda.next())
+            {
+                VistaPrendas aux = new VistaPrendas();
+                aux.tipoPrenda = rsPrenda.getString("Tipo_de_Prenda");
+                aux.color = rsPrenda.getString("Color");
+                pren.add(aux);
+            }
+            con.detener();
+            int cont = 0,flag1 =0,flag2 = 0;
+            for(VistaPrendas p : pren){
+                // Para el choice de Tipo de prenda
+                if(TPren.equals("")){
+                    for(int tpcont=0;tpcont<=cont;tpcont++){
+                        flag1 = 0;
+                        if(Ch_AD_EA_TPren.getItemCount() == tpcont){
+                            break;
+                        }
+                        if(Ch_AD_EA_TPren.getItem(tpcont).equals(p.tipoPrenda)){
+                            flag1 = 1;
+                            break;
+                        }
+                    }
+                    if(flag1 == 0){
+                        Ch_AD_EA_TPren.add(p.tipoPrenda);
+                    }
+                }
+                // Para el choice de color
+                if(Color.equals("")){
+                    for(int colcont=0;colcont<=cont;colcont++){
+                        flag2 = 0;
+                        if(Ch_AD_EA_Color.getItemCount() == colcont){
+                            break;
+                        }
+                        if(Ch_AD_EA_Color.getItem(colcont).equals(p.color)){
+                            flag2 = 1;
+                            break;
+                        }
+                    }
+                    if(flag2 == 0){
+                        Ch_AD_EA_Color.add(p.color);
+                    }
+                }
+                cont = cont + 1;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Vendedor.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -471,8 +566,25 @@ public class Administrador extends javax.swing.JFrame {
         PanelEditarArticulo.add(La_AD_EA_Color, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 152, -1, -1));
 
         CB_AD_EA_Gener.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "", "Escolar", "De Vestir" }));
+        CB_AD_EA_Gener.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CB_AD_EA_GenerActionPerformed(evt);
+            }
+        });
         PanelEditarArticulo.add(CB_AD_EA_Gener, new org.netbeans.lib.awtextra.AbsoluteConstraints(306, 70, -1, -1));
+
+        Ch_AD_EA_TPren.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_AD_EA_TPrenItemStateChanged(evt);
+            }
+        });
         PanelEditarArticulo.add(Ch_AD_EA_TPren, new org.netbeans.lib.awtextra.AbsoluteConstraints(306, 111, 150, -1));
+
+        Ch_AD_EA_Color.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_AD_EA_ColorItemStateChanged(evt);
+            }
+        });
         PanelEditarArticulo.add(Ch_AD_EA_Color, new org.netbeans.lib.awtextra.AbsoluteConstraints(306, 152, 150, 29));
 
         Bu_AD_EA_Busca.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
@@ -720,13 +832,29 @@ public class Administrador extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public LinkedList consultaEditP()
+    public LinkedList consultaEditP(String Gener,String TPren,String Color)
     {
         LinkedList res = new LinkedList();
         try {
             con.iniciar();
-            
-            con.consultar("select * from catalogo_prendas, prenda where ID = ID_catalogo");            
+            if(Gener.equals("")){
+            }else{
+                Gener = " and Genero='"+Gener+"'";
+            }
+            if(TPren.equals("")){
+            }else{
+                TPren = " and Tipo_de_prenda ='"+TPren+"'";
+            }
+            if(Color.equals("")){
+            }else{
+                Color = " and Color ='"+Color+"'";
+            }
+            String query = Gener+TPren+Color;
+            if (!query.equals(""))
+            {
+                query = " where " + query;
+            }
+            con.consultar("select * from prendas"+query);            
             while(con.resultado.next())
             {
                 VistaPrendas aux = new VistaPrendas();
@@ -992,7 +1120,7 @@ public class Administrador extends javax.swing.JFrame {
             modeloEditarArticulo.removeObject(i);
         }
         
-        LinkedList datos1 = consultaEditP();
+        LinkedList datos1 = consultaEditP(CB_AD_EA_Gener.getSelectedItem().toString(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
         
         for(Object v : datos1)
         {
@@ -1017,13 +1145,45 @@ public class Administrador extends javax.swing.JFrame {
         //CB_AD_EA_Gener.setSelectedIndex(0);
         CB_AD_EA_Gener.setEnabled(true);
         Ch_AD_EA_TPren.setEnabled(true);
-        Ch_AD_EA_Color.setEnabled(true);
+        if(Ch_AD_EA_Color.getSelectedItem().equals("") && !Ch_AD_EA_TPren.getSelectedItem().equals("")){
+            Ch_AD_EA_Color.setEnabled(true);
+        }
         Bu_AD_EA_Busca.setVisible(true);
         Bu_AD_EA_Edita.setVisible(false);
         Bu_AD_EA_Cance.setVisible(false);
         Bu_AD_EA_Elimi.setVisible(false);
     }//GEN-LAST:event_Bu_AD_EA_CanceActionPerformed
-   
+
+    private void CB_AD_EA_GenerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CB_AD_EA_GenerActionPerformed
+        
+        iniciarEscolar(CB_AD_EA_Gener.getSelectedIndex(),"","");
+        if(CB_AD_EA_Gener.getSelectedIndex()==0){}
+        else{
+            Ch_AD_EA_Color.setEnabled(false);
+        }
+        //Bu_AD_EA_Busca.setEnabled(false);
+    }//GEN-LAST:event_CB_AD_EA_GenerActionPerformed
+
+    private void Ch_AD_EA_TPrenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_AD_EA_TPrenItemStateChanged
+        iniciarEscolar(CB_AD_EA_Gener.getSelectedIndex(),Ch_AD_EA_TPren.getSelectedItem(),"");
+        if(Ch_AD_EA_TPren.getSelectedItem().equals("")){
+            Ch_AD_EA_Color.setEnabled(false);
+        }
+        else{
+            Ch_AD_EA_Color.setEnabled(true);
+        }
+        //Bu_AD_EA_Busca.setEnabled(false);
+    }//GEN-LAST:event_Ch_AD_EA_TPrenItemStateChanged
+
+    private void Ch_AD_EA_ColorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_AD_EA_ColorItemStateChanged
+        iniciarEscolar(CB_AD_EA_Gener.getSelectedIndex(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
+        /*if(Ch_AD_EA_Color.getSelectedItem().equals("") || CB_AD_EA_Gener.getSelectedItem().equals("")){}
+        else{
+            Bu_AD_EA_Busca.setEnabled(true);
+        }*/
+        System.out.println("Ya termino");
+    }//GEN-LAST:event_Ch_AD_EA_ColorItemStateChanged
+           
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
