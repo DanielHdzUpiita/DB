@@ -1,9 +1,11 @@
 package pantallas.de.bd;
 
 import DB.Generica;
+import DB.Privilegio;
 import DB.VistaPrendas;
 import DB.VistaPrendasConjunto;
 import ObjetosDB.ConexionBD;
+import SemiDAO.Usuarios;
 import Tablas.ModeloTabla1;
 import java.awt.Color;
 import java.sql.Connection;
@@ -32,6 +34,7 @@ public class Administrador extends javax.swing.JFrame {
         Bu_AD_EA_Cance.setVisible(false);
         Bu_AD_EA_Elimi.setVisible(false);
         LimpiarTicks();
+        iniciarUser();
     }
     
     public void LimpiarTicks (){
@@ -43,6 +46,13 @@ public class Administrador extends javax.swing.JFrame {
         La_AD_AA_Tick6.setVisible(false);
         La_AD_AA_Tick7.setVisible(false);
         La_AD_AA_Tick8.setVisible(false);
+    }
+    public void iniciarUser(){
+        ArrayList<Privilegio> consultarPriv = consultarPriv("");
+        choice22.add("");
+        for(Privilegio p: consultarPriv){
+            choice22.add(p.priv);
+        }
     }
     public void iniciarEscolar(int genero, String TPren, String Color)
     {
@@ -1053,11 +1063,26 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_Bu_AD_AA_AaCatActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        String a = JOptionPane.showInputDialog("Mensaje lol cococococ");
+        /*String a = JOptionPane.showInputDialog("Mensaje lol cococococ");
         String[] b = new String[] {"a","b"};
         int c = JOptionPane.showOptionDialog(null, "a", a, 0, 0, null, b, this);
         System.out.println(a);
-        System.out.println(c);
+        System.out.println(c);*/
+        String nomb = TF_AD_FC_NEscu2.getText();
+        String pass = TF_AD_FC_NEscu3.getText();
+        String priv = choice22.getSelectedItem();
+        Usuarios usu = new Usuarios();
+        int priv1 = usu.priv(priv);
+        priv = Integer.toString(priv1);
+        con.iniciar();
+        Boolean ins = con.insertar(
+                "usuarios",
+                "Nombre, Pass, Priv",
+                "'" + nomb + "','" + pass + "'," + priv);
+        if (!ins){
+            System.out.println("Falló D:");
+        }
+        con.detener();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
@@ -1426,6 +1451,22 @@ public class Administrador extends javax.swing.JFrame {
         }
         
         /*ArrayList<VistaPrendasConjunto> insert = consultar1(query);*/
+    }
+    public ArrayList<Privilegio> consultarPriv(String cond){
+        ArrayList<Privilegio> res = new ArrayList<Privilegio>();
+        try {
+            con.consultar("select * from privilegios");
+            ResultSet rsPriv = con.resultado;
+            while(rsPriv.next()){
+                Privilegio p = new Privilegio();
+                p.id = rsPriv.getInt("idPriv");
+                p.priv = rsPriv.getString("nombre");
+                res.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            return res;
     }
     public Boolean listaConiente(LinkedList data, VistaPrendasConjunto vp){
         Boolean cond, cond1, cond2, cond3, cond4, cond5;

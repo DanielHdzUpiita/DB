@@ -20,7 +20,6 @@ public class Usuarios {
     public ArrayList<UsuarioSys> consulta(String cond){
         ArrayList<UsuarioSys> res = new ArrayList<>();
         try {
-            con.iniciar();
             String query = "select * from usuarios";
             if(!cond.equals("")){
                 query +=  " where "+cond;
@@ -34,8 +33,22 @@ public class Usuarios {
                 us.priv = Integer.toString(rsDat.getInt("Pass"));
                 res.add(us);
             }
-            
-            con.detener();
+        } catch (SQLException ex) {
+            Logger.getLogger(Usuarios.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }
+    
+    public int priv(String priv){
+        int res = 0;
+        try {
+            String query = "select idPriv from privilegios where nombre = '"+priv+"'";
+            con.consultar(query);
+            ResultSet rsDat = con.resultado;
+            while(rsDat.next()){
+                res = rsDat.getInt("idPriv");
+                return res;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(Usuarios.class.getName()).log(Level.SEVERE, null, ex);
         }
