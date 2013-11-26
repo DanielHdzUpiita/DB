@@ -132,11 +132,6 @@ public class LogIn extends javax.swing.JFrame {
     }//GEN-LAST:event_CerrarLogInActionPerformed
 
     private void BotonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAceptarActionPerformed
-        /*try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(LogIn.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
         int priv = log(TextFieldNombre.getText(),PasswordField.getText());
         switch(priv){
             case 0:
