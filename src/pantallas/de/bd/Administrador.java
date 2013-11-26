@@ -2,6 +2,7 @@ package pantallas.de.bd;
 
 import DB.Generica;
 import DB.VistaPrendas;
+import DB.VistaPrendasConjunto;
 import ObjetosDB.ConexionBD;
 import Tablas.ModeloTabla1;
 import java.awt.Color;
@@ -11,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -18,8 +20,10 @@ import javax.swing.JOptionPane;
 public class Administrador extends javax.swing.JFrame {
     ConexionBD con = new ConexionBD();
     ModeloTabla1 modeloEditarArticulo = new ModeloTabla1(new String[] {"Tipo de Prenda","Genero","Color","Tela","Marca","Talla","Cantidad","Precio","Costo","Eliminar"});
+    ModeloTabla1 modeloCrearConjunto = new ModeloTabla1(new String[] {"Tipo de Prenda","Color","Tela","Marca","Talla","Eliminar"});
     
     public Administrador() {
+        con.iniciar();
         initComponents();
         iniciarEscolar(0,"","");
         iniciarConjunto();
@@ -44,7 +48,6 @@ public class Administrador extends javax.swing.JFrame {
     public void iniciarEscolar(int genero, String TPren, String Color)
     {
         try {
-            con.iniciar();
             String query= "";
             if(!TPren.equals("") && !Color.equals("")){
                 query = " where Tipo_de_prenda ='"+TPren+"' and Color = '"+Color+"'";
@@ -91,7 +94,6 @@ public class Administrador extends javax.swing.JFrame {
                 aux.color = rsPrenda.getString("Color");
                 pren.add(aux);
             }
-            con.detener();
             int cont = 0,flag1 =0,flag2 = 0;
             for(VistaPrendas p : pren){
                 // Para el choice de Tipo de prenda
@@ -137,16 +139,14 @@ public class Administrador extends javax.swing.JFrame {
     public void iniciarConjunto()
     {
         try {
-            con.iniciar();
-            ArrayList<VistaPrendas> pren = consultar("");
-            con.detener();
+            ArrayList<VistaPrendas> pren = consultar("Genero = 'Escolar'");
             choice1.add("");
+            String check = "";
             for(VistaPrendas p : pren){
-                choice1.add(p.tipoPrenda);
-//                choice2.add(p.color);
-//                choice3.add(p.talla);
-//                choice4.add(p.tela);
-//                choice5.add(p.marca);
+                if(!check.contains(p.tipoPrenda)){
+                    choice1.add(p.tipoPrenda);
+                    check += p.tipoPrenda;
+                }
             }
         } catch (Exception ex) {
             Logger.getLogger(Vendedor.class.getName()).log(Level.SEVERE, null, ex);
@@ -265,6 +265,11 @@ public class Administrador extends javax.swing.JFrame {
         setBounds(new java.awt.Rectangle(325, 50, 0, 0));
         setMinimumSize(new java.awt.Dimension(700, 600));
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
         getContentPane().setLayout(null);
 
         jTabbedPane1.setMaximumSize(new java.awt.Dimension(390, 506));
@@ -502,17 +507,7 @@ public class Administrador extends javax.swing.JFrame {
         PanelFormarConjunto.add(TF_AD_FC_PTota);
         TF_AD_FC_PTota.setBounds(396, 485, 70, 25);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        jTable2.setModel(modeloCrearConjunto);
         SP_AD_FC_AConj.setViewportView(jTable2);
 
         PanelFormarConjunto.add(SP_AD_FC_AConj);
@@ -521,18 +516,33 @@ public class Administrador extends javax.swing.JFrame {
         Bu_AD_FC_AArti.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_AD_FC_AArti.setForeground(new java.awt.Color(255, 0, 0));
         Bu_AD_FC_AArti.setText("Agregar Articulo");
+        Bu_AD_FC_AArti.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bu_AD_FC_AArtiActionPerformed(evt);
+            }
+        });
         PanelFormarConjunto.add(Bu_AD_FC_AArti);
         Bu_AD_FC_AArti.setBounds(490, 220, 167, 27);
 
         Bu_AD_FC_QArti.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_AD_FC_QArti.setForeground(new java.awt.Color(255, 0, 0));
         Bu_AD_FC_QArti.setText("Quitar Articulo");
+        Bu_AD_FC_QArti.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bu_AD_FC_QArtiActionPerformed(evt);
+            }
+        });
         PanelFormarConjunto.add(Bu_AD_FC_QArti);
         Bu_AD_FC_QArti.setBounds(50, 480, 157, 27);
 
         Bu_AD_FC_AConj.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_AD_FC_AConj.setForeground(new java.awt.Color(255, 0, 0));
         Bu_AD_FC_AConj.setText("Agregar Conjunto");
+        Bu_AD_FC_AConj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bu_AD_FC_AConjActionPerformed(evt);
+            }
+        });
         PanelFormarConjunto.add(Bu_AD_FC_AConj);
         Bu_AD_FC_AConj.setBounds(490, 480, 171, 27);
 
@@ -855,7 +865,6 @@ public class Administrador extends javax.swing.JFrame {
     {
         LinkedList res = new LinkedList();
         try {
-            con.iniciar();
             String query = "";
             if(!TPren.equals("") && !Color.equals("") && !Gener.equals("")){
                 query = " where Tipo_de_prenda ='"+TPren+"' and Color = '"+Color+"' and Genero = '"+Gener+"'";
@@ -888,7 +897,6 @@ public class Administrador extends javax.swing.JFrame {
                 aux.id = con.resultado.getInt("ID");
                 res.add(aux);
             }
-            con.detener();
         } catch (SQLException ex) {
             Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1198,7 +1206,6 @@ public class Administrador extends javax.swing.JFrame {
 
     private void Bu_AD_EA_ElimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_EA_ElimiActionPerformed
         //System.out.println("Obtencion de ID Completada");
-        con.iniciar();
         for(Object obj : modeloEditarArticulo.datos){
             VistaPrendas obj2 = (VistaPrendas)obj;
             if(obj2.Eliminar){
@@ -1209,7 +1216,6 @@ public class Administrador extends javax.swing.JFrame {
                 con.eliminar("catalogo_prendas", "ID = "+obj2.id);
             }
         }
-        con.detener();
         LinkedList old = modeloEditarArticulo.datos;
         int a = old.size();
         a--;
@@ -1224,7 +1230,7 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_Bu_AD_EA_ElimiActionPerformed
 
     private void choice1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_choice1PropertyChange
-        con.iniciar();
+        /*con.iniciar();
         String data = choice1.getSelectedItem();
         ArrayList<VistaPrendas> prendas = consultar(" Tipo_de_prenda = '"+data+"'");
         enabledChoices1(false);
@@ -1237,26 +1243,120 @@ public class Administrador extends javax.swing.JFrame {
             choice4.add(vp.tela);
             choice5.add(vp.marca);
         }
-        con.detener();
+        con.detener();*/
     }//GEN-LAST:event_choice1PropertyChange
 
     private void choice1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice1ItemStateChanged
-        con.iniciar();
         String data = choice1.getSelectedItem();
         ArrayList<VistaPrendas> prendas = consultar(" Tipo_de_prenda = '" + data + "'");
         enabledChoices1(false);
         limpiarChoices1();
         iniciarChoices1();
         enabledChoices1(true);
+        String check = "";
         for (VistaPrendas vp : prendas) {
-            choice2.add(vp.color);
-            choice3.add(vp.talla);
-            choice4.add(vp.tela);
-            choice5.add(vp.marca);
+            String aux = vp.color+vp.talla+vp.tela+vp.marca;
+            if(!check.contains(aux))
+            {
+                choice2.add(vp.color);
+                choice3.add(vp.talla);
+                choice4.add(vp.tela);
+                choice5.add(vp.marca);
+                check += aux;
+            }
         }
-        con.detener();
     }//GEN-LAST:event_choice1ItemStateChanged
 
+    private void Bu_AD_FC_AArtiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_FC_AArtiActionPerformed
+        VistaPrendasConjunto vp = new VistaPrendasConjunto();
+        vp.tipoPrenda = choice1.getSelectedItem();
+        vp.color = choice2.getSelectedItem();
+        vp.talla = choice3.getSelectedItem();
+        vp.tela = choice4.getSelectedItem();
+        vp.marca = choice5.getSelectedItem();
+        Boolean cond = 
+                !vp.tipoPrenda.equals("") && 
+                !vp.color.equals("") && 
+                !vp.talla.equals("") && 
+                !vp.tela.equals("") && 
+                !vp.marca.equals("");
+        if(cond){
+            insertarConjunto(vp);
+        }
+        if(vp.tipoPrenda.equals("")){
+            choice1.select(0);
+        }
+        if(vp.color.equals("")){
+            choice2.select(0);
+        }
+        if(vp.talla.equals("")){
+            choice3.select(0);
+        }
+        if(vp.tela.equals("")){
+            choice4.select(0);
+        }
+        if(vp.marca.equals("")){
+            choice5.select(0);
+        }
+    }//GEN-LAST:event_Bu_AD_FC_AArtiActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        con.detener();
+    }//GEN-LAST:event_formWindowClosed
+
+    private void Bu_AD_FC_QArtiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_FC_QArtiActionPerformed
+        int tamDatos = modeloCrearConjunto.datos.size();
+        tamDatos--;
+        //ArrayList<Integer> eliminar = new ArrayList<>();
+        VistaPrendasConjunto aux;
+        for(int i = tamDatos; i >= 0 ; i--)
+        {
+            aux = (VistaPrendasConjunto)modeloCrearConjunto.datos.get(i);
+            if(aux.delete){
+                modeloCrearConjunto.removeObject(i);
+            }
+        }
+    }//GEN-LAST:event_Bu_AD_FC_QArtiActionPerformed
+
+    private void Bu_AD_FC_AConjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_FC_AConjActionPerformed
+        LinkedList data = modeloCrearConjunto.datos;
+        VistaPrendasConjunto aux;
+        for(Object obj:data){
+            aux = (VistaPrendasConjunto)obj;
+            System.out.println(aux.color+" -> "+aux.marca+" -> "+aux.talla+" -> "+aux.tela+" -> "+aux.tipoPrenda);
+        }
+    }//GEN-LAST:event_Bu_AD_FC_AConjActionPerformed
+    public void insertarConjunto(VistaPrendasConjunto vp){
+        String query="";
+        query += " Color = '"+vp.color+"'";
+        query += " Tela = '"+vp.tela+"'";
+        query += " Talla = '"+vp.talla+"'";
+        query += " Marca = '"+vp.marca+"'";
+        query += " Tipo_de_Prenda = '"+vp.tipoPrenda+"'";
+        
+        if(!listaConiente(modeloCrearConjunto.datos,vp)){
+            modeloCrearConjunto.addObject(vp);
+        }
+        
+        /*ArrayList<VistaPrendasConjunto> insert = consultar1(query);*/
+    }
+    public Boolean listaConiente(LinkedList data, VistaPrendasConjunto vp){
+        Boolean cond, cond1, cond2, cond3, cond4, cond5;
+        VistaPrendasConjunto aux;
+        for(Object obj : data){
+            aux = ((VistaPrendasConjunto)obj);
+            cond1 = vp.color.equals(aux.color);
+            cond2 = vp.marca.equals(aux.marca);
+            cond3 = vp.talla.equals(aux.talla);
+            cond4 = vp.tela.equals(aux.tela);
+            cond5 = vp.tipoPrenda.equals(aux.tipoPrenda);
+            cond = cond1 && cond2 && cond3 && cond4 && cond5;
+            if(cond){
+                return cond;
+            }
+        }
+        return false;
+    }
     public void iniciarChoices1()
     {
         choice2.add("");
@@ -1278,6 +1378,38 @@ public class Administrador extends javax.swing.JFrame {
         choice4.setEnabled(b);
         choice5.setEnabled(b);
     }
+    public ArrayList<VistaPrendasConjunto> consultar1(String cond)
+    {
+        ArrayList<VistaPrendasConjunto> res = new ArrayList<>();
+        
+        String query = "";
+        if(cond.equals(""))
+        {
+            query = "select * from prendas";
+        }
+        else
+        {
+            query = "select * from prendas where "+cond;
+        }
+        try {
+            con.consultar(query);
+            ResultSet rsPrenda = con.resultado;
+            while(rsPrenda.next())
+            {
+                VistaPrendasConjunto aux = new VistaPrendasConjunto();
+                aux.tipoPrenda = rsPrenda.getString("Tipo_de_Prenda");
+                aux.color = rsPrenda.getString("Color");
+                aux.talla = rsPrenda.getString("Talla");
+                aux.tela = rsPrenda.getString("Tela");
+                aux.marca = rsPrenda.getString("Marca");
+                aux.id = rsPrenda.getInt("ID");
+                res.add(aux);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }
     public ArrayList<VistaPrendas> consultar(String cond)
     {
         ArrayList<VistaPrendas> res = new ArrayList<>();
@@ -1292,7 +1424,6 @@ public class Administrador extends javax.swing.JFrame {
             query = "select * from prendas where "+cond;
         }
         try {
-            con.iniciar();
             con.consultar(query);
             ResultSet rsPrenda = con.resultado;
             while(rsPrenda.next())
@@ -1303,9 +1434,9 @@ public class Administrador extends javax.swing.JFrame {
                 aux.talla = rsPrenda.getString("Talla");
                 aux.tela = rsPrenda.getString("Tela");
                 aux.marca = rsPrenda.getString("Marca");
+                aux.id = rsPrenda.getInt("ID");
                 res.add(aux);
             }
-            con.detener();
         } catch (SQLException ex) {
             Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
         }
