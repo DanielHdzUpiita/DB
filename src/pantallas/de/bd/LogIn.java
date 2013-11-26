@@ -1,11 +1,15 @@
 package pantallas.de.bd;
 
+import ObjetosDB.ConexionBD;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LogIn extends javax.swing.JFrame {
+    ConexionBD con = new ConexionBD();
     public LogIn() {
         initComponents();
         
@@ -28,9 +32,9 @@ public class LogIn extends javax.swing.JFrame {
         setIconImages(null);
         setMaximumSize(new java.awt.Dimension(520, 293));
         setMinimumSize(new java.awt.Dimension(520, 293));
-        setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(520, 293));
         setResizable(false);
+        setUndecorated(true);
         getContentPane().setLayout(null);
 
         CerrarLogIn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cerrar.png"))); // NOI18N
@@ -128,17 +132,50 @@ public class LogIn extends javax.swing.JFrame {
     }//GEN-LAST:event_CerrarLogInActionPerformed
 
     private void BotonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonAceptarActionPerformed
-        try {
+        /*try {
             Thread.sleep(500);
         } catch (InterruptedException ex) {
             Logger.getLogger(LogIn.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        int priv = log(TextFieldNombre.getText(),PasswordField.getText());
+        switch(priv){
+            case 0:
+                Cliente Cli = new Cliente();
+                Cli.setVisible(true);
+                break;
+            case 1:
+                Administrador adm = new Administrador();
+                adm.setVisible(true);
+                break;
+            case 2:
+                Vendedor v = new Vendedor();
+                v.setVisible(true);
+                break;
         }
-        Cliente Cli = new Cliente();
-        Cli.setVisible(true);
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_BotonAceptarActionPerformed
-
+    
+    public int log(String user, String pass)
+    {
+        con.iniciar();
+        String procedure = "call login('" + user + "','" + pass + "')";
+        int priv = 0;
+        if(con.consultar(procedure))
+        {
+            ResultSet rs = con.resultado;
+            try {
+                while(rs.next()){
+                    priv = rs.getInt("res");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(LogIn.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        con.detener();
+        return priv;
+    
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
