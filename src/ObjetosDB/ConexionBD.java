@@ -63,6 +63,16 @@ public class ConexionBD {
         
     }
     
+    public boolean exec(String procedure){
+        try{
+            instruccion = conexion.createStatement();
+            instruccion.executeUpdate(procedure);
+            return true;
+        }catch(SQLException e){
+            return false;
+        }
+    }
+    
     public boolean insertar(String table_name, String column_name, String column_value){
         try {
             instruccion = conexion.createStatement();

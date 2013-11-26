@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -496,6 +495,8 @@ public class Administrador extends javax.swing.JFrame {
 
         La_AD_FC_PTota.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
         La_AD_FC_PTota.setText("Precio Total");
+        La_AD_FC_PTota.setEnabled(false);
+        La_AD_FC_PTota.setOpaque(true);
         PanelFormarConjunto.add(La_AD_FC_PTota);
         La_AD_FC_PTota.setBounds(278, 485, 100, 29);
         PanelFormarConjunto.add(TF_AD_FC_NEscu);
@@ -504,6 +505,8 @@ public class Administrador extends javax.swing.JFrame {
         TF_AD_FC_TUnif.setBounds(298, 81, 157, 25);
         PanelFormarConjunto.add(TF_AD_FC_TConj);
         TF_AD_FC_TConj.setBounds(298, 122, 157, 25);
+
+        TF_AD_FC_PTota.setEnabled(false);
         PanelFormarConjunto.add(TF_AD_FC_PTota);
         TF_AD_FC_PTota.setBounds(396, 485, 70, 25);
 
@@ -558,10 +561,28 @@ public class Administrador extends javax.swing.JFrame {
         });
         PanelFormarConjunto.add(choice1);
         choice1.setBounds(30, 190, 120, 20);
+
+        choice2.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                choice2ItemStateChanged(evt);
+            }
+        });
         PanelFormarConjunto.add(choice2);
         choice2.setBounds(160, 190, 120, 20);
+
+        choice3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                choice3ItemStateChanged(evt);
+            }
+        });
         PanelFormarConjunto.add(choice3);
         choice3.setBounds(290, 190, 120, 20);
+
+        choice4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                choice4ItemStateChanged(evt);
+            }
+        });
         PanelFormarConjunto.add(choice4);
         choice4.setBounds(420, 190, 120, 20);
         PanelFormarConjunto.add(choice5);
@@ -1321,11 +1342,87 @@ public class Administrador extends javax.swing.JFrame {
     private void Bu_AD_FC_AConjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_FC_AConjActionPerformed
         LinkedList data = modeloCrearConjunto.datos;
         VistaPrendasConjunto aux;
+        String color = "",marca = "",talla = "",tela = "",tipo = "";
+        String nEsc = TF_AD_FC_NEscu.getText();
+        String typUnif = TF_AD_FC_TUnif.getText();
+        String tallaUnif = TF_AD_FC_TConj.getText();
+        String query = "";
+        query += "'"+nEsc+"',";
+        query += "'"+typUnif+"',";
+        query += "'"+tallaUnif+"',";
+        System.out.println(nEsc + " -> " + typUnif + " -> " + tallaUnif);
         for(Object obj:data){
+            String query1 = query;
             aux = (VistaPrendasConjunto)obj;
-            System.out.println(aux.color+" -> "+aux.marca+" -> "+aux.talla+" -> "+aux.tela+" -> "+aux.tipoPrenda);
+            query1 += "'"+aux.tipoPrenda+"',";
+            query1 += "'"+aux.color+"',";
+            query1 += "'"+aux.marca+"',";
+            query1 += "'"+aux.tela+"',";
+            query1 += "'"+aux.talla+"'";
+            if(!con.consultar("call sp_insert_conjunto ("+query1+")"))
+            {
+                System.out.println("xoxox");
+            }
+            System.out.println(query1);
         }
     }//GEN-LAST:event_Bu_AD_FC_AConjActionPerformed
+
+    private void choice2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice2ItemStateChanged
+        String data = choice2.getSelectedItem();
+        ArrayList<VistaPrendas> prendas = consultar(" Color = '" + data + "'");
+        enabledChoices2(false);
+        limpiarChoices2();
+        iniciarChoices2();
+        enabledChoices2(true);
+        String check = "";
+        for (VistaPrendas vp : prendas) {
+            String aux = vp.talla+vp.tela+vp.marca;
+            if(!check.contains(aux))
+            {
+                choice3.add(vp.talla);
+                choice4.add(vp.tela);
+                choice5.add(vp.marca);
+                check += aux;
+            }
+        }
+    }//GEN-LAST:event_choice2ItemStateChanged
+
+    private void choice3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice3ItemStateChanged
+        String data = choice3.getSelectedItem();
+        ArrayList<VistaPrendas> prendas = consultar(" Talla = '" + data + "'");
+        enabledChoices3(false);
+        limpiarChoices3();
+        iniciarChoices3();
+        enabledChoices3(true);
+        String check = "";
+        for (VistaPrendas vp : prendas) {
+            String aux = vp.tela+vp.marca;
+            if(!check.contains(aux))
+            {
+                choice4.add(vp.tela);
+                choice5.add(vp.marca);
+                check += aux;
+            }
+        }
+    }//GEN-LAST:event_choice3ItemStateChanged
+
+    private void choice4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice4ItemStateChanged
+        String data = choice4.getSelectedItem();
+        ArrayList<VistaPrendas> prendas = consultar(" Tela = '" + data + "'");
+        enabledChoices4(false);
+        limpiarChoices4();
+        iniciarChoices4();
+        enabledChoices4(true);
+        String check = "";
+        for (VistaPrendas vp : prendas) {
+            String aux = vp.tela+vp.marca;
+            if(!check.contains(aux))
+            {
+                choice5.add(vp.marca);
+                check += aux;
+            }
+        }
+    }//GEN-LAST:event_choice4ItemStateChanged
     public void insertarConjunto(VistaPrendasConjunto vp){
         String query="";
         query += " Color = '"+vp.color+"'";
@@ -1376,6 +1473,51 @@ public class Administrador extends javax.swing.JFrame {
         choice2.setEnabled(b);
         choice3.setEnabled(b);
         choice4.setEnabled(b);
+        choice5.setEnabled(b);
+    }
+    public void iniciarChoices2()
+    {
+        choice3.add("");
+        choice4.add("");
+        choice5.add("");
+    }
+    public void limpiarChoices2()
+    {
+        choice3.removeAll();
+        choice4.removeAll();
+        choice5.removeAll();
+    }
+    public void enabledChoices2(Boolean b)
+    {
+        choice3.setEnabled(b);
+        choice4.setEnabled(b);
+        choice5.setEnabled(b);
+    }
+    public void iniciarChoices3()
+    {
+        choice4.add("");
+        choice5.add("");
+    }
+    public void limpiarChoices3()
+    {
+        choice4.removeAll();
+        choice5.removeAll();
+    }
+    public void enabledChoices3(Boolean b)
+    {
+        choice4.setEnabled(b);
+        choice5.setEnabled(b);
+    }
+    public void iniciarChoices4()
+    {
+        choice5.add("");
+    }
+    public void limpiarChoices4()
+    {
+        choice5.removeAll();
+    }
+    public void enabledChoices4(Boolean b)
+    {
         choice5.setEnabled(b);
     }
     public ArrayList<VistaPrendasConjunto> consultar1(String cond)
