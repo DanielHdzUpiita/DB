@@ -487,7 +487,7 @@ public class Administrador extends javax.swing.JFrame {
         La_AD_FC_AConj.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
         La_AD_FC_AConj.setText("Articulos del Conjunto");
         PanelFormarConjunto.add(La_AD_FC_AConj);
-        La_AD_FC_AConj.setBounds(30, 320, 170, 29);
+        La_AD_FC_AConj.setBounds(30, 250, 170, 29);
 
         La_AD_FC_PTota.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
         La_AD_FC_PTota.setText("Precio Total");
@@ -516,7 +516,7 @@ public class Administrador extends javax.swing.JFrame {
         SP_AD_FC_AConj.setViewportView(jTable2);
 
         PanelFormarConjunto.add(SP_AD_FC_AConj);
-        SP_AD_FC_AConj.setBounds(26, 355, 630, 100);
+        SP_AD_FC_AConj.setBounds(30, 280, 630, 180);
 
         Bu_AD_FC_AArti.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_AD_FC_AArti.setForeground(new java.awt.Color(255, 0, 0));
