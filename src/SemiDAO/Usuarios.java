@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * @author OSVALDO
  */
 public class Usuarios {
-    ConexionBD con = new ConexionBD();
+    public ConexionBD con = new ConexionBD();
     
     public ArrayList<UsuarioSys> consulta(String cond){
         ArrayList<UsuarioSys> res = new ArrayList<>();

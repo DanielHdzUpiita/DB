@@ -1071,10 +1071,10 @@ public class Administrador extends javax.swing.JFrame {
         String nomb = TF_AD_FC_NEscu2.getText();
         String pass = TF_AD_FC_NEscu3.getText();
         String priv = choice22.getSelectedItem();
-        Usuarios usu = new Usuarios();
-        int priv1 = usu.priv(priv);
-        priv = Integer.toString(priv1);
         con.iniciar();
+        //Usuarios usu = new Usuarios();
+        int priv1 = priv(priv);
+        priv = Integer.toString(priv1);
         Boolean ins = con.insertar(
                 "usuarios",
                 "Nombre, Pass, Priv",
@@ -1085,6 +1085,22 @@ public class Administrador extends javax.swing.JFrame {
         con.detener();
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    public int priv(String priv){
+        int res = 0;
+        try {
+            String query = "select idPriv from privilegios where nombre = '"+priv+"'";
+            con.consultar(query);
+            ResultSet rsDat = con.resultado;
+            while(rsDat.next()){
+                res = rsDat.getInt("idPriv");
+                return res;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Usuarios.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return res;
+    }
+    
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         LinkedList m = modeloEditarArticulo.datos;
         VistaPrendas v = new VistaPrendas();
