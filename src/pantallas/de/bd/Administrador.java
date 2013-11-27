@@ -1,11 +1,9 @@
 package pantallas.de.bd;
 
 import DB.Generica;
-import DB.Privilegio;
 import DB.VistaPrendas;
 import DB.VistaPrendasConjunto;
 import ObjetosDB.ConexionBD;
-import SemiDAO.Usuarios;
 import Tablas.ModeloTabla1;
 import java.awt.Color;
 import java.sql.Connection;
@@ -14,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -21,6 +20,7 @@ import javax.swing.JOptionPane;
 public class Administrador extends javax.swing.JFrame {
     ConexionBD con = new ConexionBD();
     ModeloTabla1 modeloEditarArticulo = new ModeloTabla1(new String[] {"Tipo de Prenda","Genero","Color","Tela","Marca","Talla","Cantidad","Precio","Costo","Eliminar"});
+    ModeloTabla1 modeloArticulosOriginal = new ModeloTabla1(new String[] {"Tipo de Prenda","Genero","Color","Tela","Marca","Talla","Cantidad","Precio","Costo","Eliminar"});
     ModeloTabla1 modeloCrearConjunto = new ModeloTabla1(new String[] {"Tipo de Prenda","Color","Tela","Marca","Talla","Eliminar"});
     
     public Administrador() {
@@ -34,7 +34,6 @@ public class Administrador extends javax.swing.JFrame {
         Bu_AD_EA_Cance.setVisible(false);
         Bu_AD_EA_Elimi.setVisible(false);
         LimpiarTicks();
-        iniciarUser();
     }
     
     public void LimpiarTicks (){
@@ -47,16 +46,10 @@ public class Administrador extends javax.swing.JFrame {
         La_AD_AA_Tick7.setVisible(false);
         La_AD_AA_Tick8.setVisible(false);
     }
-    public void iniciarUser(){
-        ArrayList<Privilegio> consultarPriv = consultarPriv("");
-        choice22.add("");
-        for(Privilegio p: consultarPriv){
-            choice22.add(p.priv);
-        }
-    }
     public void iniciarEscolar(int genero, String TPren, String Color)
     {
         try {
+            con.iniciar();
             String query= "";
             if(!TPren.equals("") && !Color.equals("")){
                 query = " where Tipo_de_prenda ='"+TPren+"' and Color = '"+Color+"'";
@@ -103,6 +96,7 @@ public class Administrador extends javax.swing.JFrame {
                 aux.color = rsPrenda.getString("Color");
                 pren.add(aux);
             }
+            con.detener();
             int cont = 0,flag1 =0,flag2 = 0;
             for(VistaPrendas p : pren){
                 // Para el choice de Tipo de prenda
@@ -244,6 +238,19 @@ public class Administrador extends javax.swing.JFrame {
         SP_AD_EA_Tabla = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         PanelProveedores = new javax.swing.JPanel();
+        PanelUsuarios = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jLabel27 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox();
+        jLabel40 = new javax.swing.JLabel();
+        choice21 = new java.awt.Choice();
+        jLabel44 = new javax.swing.JLabel();
+        choice22 = new java.awt.Choice();
+        jButton5 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         PanelCerrarSesion = new javax.swing.JPanel();
         PanelCerrarSesionInterno = new javax.swing.JPanel();
         La_AD_CS_NUsua = new javax.swing.JLabel();
@@ -253,18 +260,6 @@ public class Administrador extends javax.swing.JFrame {
         La_AD_CS_FRegi = new javax.swing.JLabel();
         La_AD_CS_Regis = new javax.swing.JLabel();
         Bu_AD_CS_CSesi = new javax.swing.JButton();
-        PanelUsuarios = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        choice22 = new java.awt.Choice();
-        jButton5 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jLabel45 = new javax.swing.JLabel();
-        jLabel46 = new javax.swing.JLabel();
-        jLabel47 = new javax.swing.JLabel();
-        TF_AD_FC_NEscu2 = new javax.swing.JTextField();
-        TF_AD_FC_NEscu3 = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
 
@@ -504,8 +499,6 @@ public class Administrador extends javax.swing.JFrame {
 
         La_AD_FC_PTota.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
         La_AD_FC_PTota.setText("Precio Total");
-        La_AD_FC_PTota.setEnabled(false);
-        La_AD_FC_PTota.setOpaque(true);
         PanelFormarConjunto.add(La_AD_FC_PTota);
         La_AD_FC_PTota.setBounds(278, 485, 100, 29);
         PanelFormarConjunto.add(TF_AD_FC_NEscu);
@@ -514,8 +507,6 @@ public class Administrador extends javax.swing.JFrame {
         TF_AD_FC_TUnif.setBounds(298, 81, 157, 25);
         PanelFormarConjunto.add(TF_AD_FC_TConj);
         TF_AD_FC_TConj.setBounds(298, 122, 157, 25);
-
-        TF_AD_FC_PTota.setEnabled(false);
         PanelFormarConjunto.add(TF_AD_FC_PTota);
         TF_AD_FC_PTota.setBounds(396, 485, 70, 25);
 
@@ -570,28 +561,10 @@ public class Administrador extends javax.swing.JFrame {
         });
         PanelFormarConjunto.add(choice1);
         choice1.setBounds(30, 190, 120, 20);
-
-        choice2.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                choice2ItemStateChanged(evt);
-            }
-        });
         PanelFormarConjunto.add(choice2);
         choice2.setBounds(160, 190, 120, 20);
-
-        choice3.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                choice3ItemStateChanged(evt);
-            }
-        });
         PanelFormarConjunto.add(choice3);
         choice3.setBounds(290, 190, 120, 20);
-
-        choice4.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                choice4ItemStateChanged(evt);
-            }
-        });
         PanelFormarConjunto.add(choice4);
         choice4.setBounds(420, 190, 120, 20);
         PanelFormarConjunto.add(choice5);
@@ -649,6 +622,11 @@ public class Administrador extends javax.swing.JFrame {
         Bu_AD_EA_Edita.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_AD_EA_Edita.setForeground(new java.awt.Color(255, 0, 0));
         Bu_AD_EA_Edita.setText("Editar");
+        Bu_AD_EA_Edita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bu_AD_EA_EditaActionPerformed(evt);
+            }
+        });
         PanelEditarArticulo.add(Bu_AD_EA_Edita, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 450, -1, -1));
 
         Bu_AD_EA_Cance.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
@@ -695,6 +673,108 @@ public class Administrador extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Proveedores", PanelProveedores);
+
+        jScrollPane1.setViewportView(jTable1);
+
+        jButton1.setText("jButton1");
+
+        jLabel27.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
+        jLabel27.setText("Genero");
+        jLabel27.setToolTipText("");
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Escolar", "De Vestir" }));
+
+        jLabel40.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
+        jLabel40.setText("Tipo de Prenda");
+
+        jLabel44.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
+        jLabel44.setText("Color");
+
+        jButton5.setText("jButton1");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton11.setText("jButton11");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Esta vista aun no esta, hay que hacerla completamente");
+
+        javax.swing.GroupLayout PanelUsuariosLayout = new javax.swing.GroupLayout(PanelUsuarios);
+        PanelUsuarios.setLayout(PanelUsuariosLayout);
+        PanelUsuariosLayout.setHorizontalGroup(
+            PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelUsuariosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PanelUsuariosLayout.createSequentialGroup()
+                        .addGap(41, 41, 41)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE))
+                    .addGroup(PanelUsuariosLayout.createSequentialGroup()
+                        .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(PanelUsuariosLayout.createSequentialGroup()
+                                .addComponent(jLabel27)
+                                .addGap(46, 46, 46)
+                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(PanelUsuariosLayout.createSequentialGroup()
+                                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel40)
+                                    .addComponent(jLabel44))
+                                .addGap(40, 40, 40)
+                                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(choice22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(choice21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsuariosLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton5)))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsuariosLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addGap(29, 29, 29)
+                        .addComponent(jButton11)
+                        .addGap(24, 24, 24))))
+            .addGroup(PanelUsuariosLayout.createSequentialGroup()
+                .addGap(197, 197, 197)
+                .addComponent(jLabel1)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        PanelUsuariosLayout.setVerticalGroup(
+            PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelUsuariosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel27)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel40)
+                    .addComponent(choice21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel44)
+                    .addComponent(choice22, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(46, 46, 46)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addComponent(jButton5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton11))
+                .addGap(35, 35, 35))
+        );
+
+        jTabbedPane1.addTab("Usuarios", PanelUsuarios);
 
         PanelCerrarSesion.setBackground(new java.awt.Color(205, 218, 230));
         PanelCerrarSesion.setLayout(null);
@@ -774,99 +854,6 @@ public class Administrador extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Cerrar Sesion", PanelCerrarSesion);
 
-        jScrollPane1.setViewportView(jTable1);
-
-        jButton1.setText("jButton1");
-
-        jButton5.setText("Agregar Usuario");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        jButton11.setText("jButton11");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
-        jLabel45.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
-        jLabel45.setText("Password:");
-
-        jLabel46.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
-        jLabel46.setText("Privilegio");
-
-        jLabel47.setFont(new java.awt.Font("Pristina", 0, 24)); // NOI18N
-        jLabel47.setText("Nombre:");
-        jLabel47.setToolTipText("");
-
-        javax.swing.GroupLayout PanelUsuariosLayout = new javax.swing.GroupLayout(PanelUsuarios);
-        PanelUsuarios.setLayout(PanelUsuariosLayout);
-        PanelUsuariosLayout.setHorizontalGroup(
-            PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsuariosLayout.createSequentialGroup()
-                .addContainerGap(27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsuariosLayout.createSequentialGroup()
-                        .addComponent(jButton5)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelUsuariosLayout.createSequentialGroup()
-                        .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
-                            .addGroup(PanelUsuariosLayout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addGap(29, 29, 29)
-                                .addComponent(jButton11)))
-                        .addGap(24, 24, 24))))
-            .addGroup(PanelUsuariosLayout.createSequentialGroup()
-                .addGap(195, 195, 195)
-                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel46)
-                    .addComponent(jLabel45)
-                    .addComponent(jLabel47))
-                .addGap(29, 29, 29)
-                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(TF_AD_FC_NEscu3)
-                    .addComponent(TF_AD_FC_NEscu2)
-                    .addComponent(choice22, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        PanelUsuariosLayout.setVerticalGroup(
-            PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelUsuariosLayout.createSequentialGroup()
-                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelUsuariosLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(PanelUsuariosLayout.createSequentialGroup()
-                                .addGap(7, 7, 7)
-                                .addComponent(jLabel47))
-                            .addComponent(TF_AD_FC_NEscu2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(TF_AD_FC_NEscu3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel45))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel46)
-                            .addComponent(choice22, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE))
-                    .addGroup(PanelUsuariosLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton5)))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(119, 119, 119)
-                .addGroup(PanelUsuariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton11))
-                .addGap(35, 35, 35))
-        );
-
-        jTabbedPane1.addTab("Usuarios", PanelUsuarios);
-
         getContentPane().add(jTabbedPane1);
         jTabbedPane1.setBounds(10, 30, 680, 560);
         jTabbedPane1.getAccessibleContext().setAccessibleName("");
@@ -886,6 +873,7 @@ public class Administrador extends javax.swing.JFrame {
     {
         LinkedList res = new LinkedList();
         try {
+            con.iniciar();
             String query = "";
             if(!TPren.equals("") && !Color.equals("") && !Gener.equals("")){
                 query = " where Tipo_de_prenda ='"+TPren+"' and Color = '"+Color+"' and Genero = '"+Gener+"'";
@@ -918,6 +906,7 @@ public class Administrador extends javax.swing.JFrame {
                 aux.id = con.resultado.getInt("ID");
                 res.add(aux);
             }
+            con.detener();
         } catch (SQLException ex) {
             Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1063,44 +1052,13 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_Bu_AD_AA_AaCatActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        /*String a = JOptionPane.showInputDialog("Mensaje lol cococococ");
+        String a = JOptionPane.showInputDialog("Mensaje lol cococococ");
         String[] b = new String[] {"a","b"};
         int c = JOptionPane.showOptionDialog(null, "a", a, 0, 0, null, b, this);
         System.out.println(a);
-        System.out.println(c);*/
-        String nomb = TF_AD_FC_NEscu2.getText();
-        String pass = TF_AD_FC_NEscu3.getText();
-        String priv = choice22.getSelectedItem();
-        con.iniciar();
-        //Usuarios usu = new Usuarios();
-        int priv1 = priv(priv);
-        priv = Integer.toString(priv1);
-        Boolean ins = con.insertar(
-                "usuarios",
-                "Nombre, Pass, Priv",
-                "'" + nomb + "','" + pass + "'," + priv);
-        if (!ins){
-            System.out.println("Falló D:");
-        }
-        con.detener();
+        System.out.println(c);
     }//GEN-LAST:event_jButton5ActionPerformed
 
-    public int priv(String priv){
-        int res = 0;
-        try {
-            String query = "select idPriv from privilegios where nombre = '"+priv+"'";
-            con.consultar(query);
-            ResultSet rsDat = con.resultado;
-            while(rsDat.next()){
-                res = rsDat.getInt("idPriv");
-                return res;
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Usuarios.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return res;
-    }
-    
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         LinkedList m = modeloEditarArticulo.datos;
         VistaPrendas v = new VistaPrendas();
@@ -1192,11 +1150,9 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_TF_AD_AA_CantiFocusLost
 
     private void Bu_AD_EA_BuscaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_EA_BuscaActionPerformed
-        LinkedList datos1 = consultaEditP(CB_AD_EA_Gener.getSelectedItem().toString(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
-        
-        for(Object v : datos1){
-            modeloEditarArticulo.addObject((Generica)v);
-        }
+        llenarTabla(modeloEditarArticulo);
+        llenarTabla(modeloArticulosOriginal);
+
         CB_AD_EA_Gener.setEnabled(false);
         Ch_AD_EA_TPren.setEnabled(false);
         Ch_AD_EA_Color.setEnabled(false);
@@ -1206,13 +1162,9 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_Bu_AD_EA_BuscaActionPerformed
 
     private void Bu_AD_EA_CanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_EA_CanceActionPerformed
-        LinkedList old = modeloEditarArticulo.datos;
-        int a = old.size();
-        a--;
-        for(int i = a; i >= 0; i--){
-            modeloEditarArticulo.removeObject(i);
-        }
-        
+        limpiarTabla(modeloEditarArticulo);
+        limpiarTabla(modeloArticulosOriginal);
+
         CB_AD_EA_Gener.setEnabled(true);
         Ch_AD_EA_TPren.setEnabled(true);
         if(Ch_AD_EA_Color.getSelectedItem().equals("") && !Ch_AD_EA_TPren.getSelectedItem().equals("")){
@@ -1245,6 +1197,7 @@ public class Administrador extends javax.swing.JFrame {
     }//GEN-LAST:event_Ch_AD_EA_ColorItemStateChanged
 
     private void jTable3PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jTable3PropertyChange
+        //Esto es para que se haga visible el boton de eliminar cuando seleccionemos una prenda
         for(Object obj : modeloEditarArticulo.datos){
             VistaPrendas obj2 = (VistaPrendas)obj;
             if(obj2.Eliminar){
@@ -1258,26 +1211,22 @@ public class Administrador extends javax.swing.JFrame {
 
     private void Bu_AD_EA_ElimiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_EA_ElimiActionPerformed
         //System.out.println("Obtencion de ID Completada");
+        con.iniciar();
         for(Object obj : modeloEditarArticulo.datos){
             VistaPrendas obj2 = (VistaPrendas)obj;
             if(obj2.Eliminar){
                 Bu_AD_EA_Elimi.setVisible(true);
-                String borrar = "ID_catalogo="+obj2.id+" and cantidad="+obj2.cantidad+" and costo="+obj2.costo+" and precio="+obj2.precio;
+                String borrar = "ID_catalogo="+obj2.id+" and talla='"+obj2.talla+"' and cantidad="+obj2.cantidad+" and costo="+obj2.costo+" and precio="+obj2.precio;
                // System.out.println(borrar);
-                con.eliminar("prenda", borrar);
-                con.eliminar("catalogo_prendas", "ID = "+obj2.id);
+                con.eliminar("prenda", borrar);//borrara los datos de prenda, regularmente siempre sera verdadera la instruccion
+                con.eliminar("catalogo_prendas", "ID = "+obj2.id);//esto sera falso mientras halla prendas asociadas al articulo de catalogo prenda correspondiente
             }
         }
-        LinkedList old = modeloEditarArticulo.datos;
-        int a = old.size();
-        a--;
-        for(int i = a; i >= 0; i--){
-            modeloEditarArticulo.removeObject(i);
-        }
-        LinkedList datos1 = consultaEditP(CB_AD_EA_Gener.getSelectedItem().toString(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
-        for(Object v : datos1){
-            modeloEditarArticulo.addObject((Generica)v);
-        }
+        con.detener();
+        limpiarTabla(modeloEditarArticulo);
+        limpiarTabla(modeloArticulosOriginal);
+        llenarTabla(modeloEditarArticulo);
+        llenarTabla(modeloArticulosOriginal);
         Bu_AD_EA_Elimi.setVisible(false);
     }//GEN-LAST:event_Bu_AD_EA_ElimiActionPerformed
 
@@ -1300,6 +1249,7 @@ public class Administrador extends javax.swing.JFrame {
 
     private void choice1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice1ItemStateChanged
         String data = choice1.getSelectedItem();
+        
         ArrayList<VistaPrendas> prendas = consultar(" Tipo_de_prenda = '" + data + "'");
         enabledChoices1(false);
         limpiarChoices1();
@@ -1317,8 +1267,61 @@ public class Administrador extends javax.swing.JFrame {
                 check += aux;
             }
         }
+        System.out.println("Primer choice = "+choice1.getSelectedItem());
     }//GEN-LAST:event_choice1ItemStateChanged
 
+    private void Bu_AD_EA_EditaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_EA_EditaActionPerformed
+        con.iniciar();
+        int cont=0,cont2=0;
+        for(Object editado : modeloEditarArticulo.datos){
+            VistaPrendas edit = new VistaPrendas();
+            edit = (VistaPrendas)editado;
+            String editar1 = "talla='"+edit.talla+"',cantidad="+edit.cantidad+",costo="+edit.costo+",precio="+edit.precio;
+            String editar2 = "genero='"+edit.genero+"',tipo_de_prenda='"+edit.tipoPrenda+"',color='"+edit.color+"',tela='"+edit.tela+"',marca='"+edit.marca+"'";
+            //System.out.println(cont+", "+cont2);
+            //System.out.println(edit.tipoPrenda);
+            cont2=0;
+            for(Object original : modeloArticulosOriginal.datos){
+                VistaPrendas orig = new VistaPrendas();
+                orig = (VistaPrendas)original;
+                String original1 = "ID_catalogo="+orig.id+" and talla='"+orig.talla+"' and cantidad="+orig.cantidad+" and costo="+orig.costo+" and precio="+orig.precio;
+                String original2 = "ID="+orig.id+" and genero='"+orig.genero+"' and tipo_de_prenda='"+orig.tipoPrenda+"' and color='"+orig.color+"' and tela='"+orig.tela+"' and marca='"+orig.marca+"'";
+                if(cont==cont2){
+                    con.editar("prenda",editar1,original1);
+                    con.editar("catalogo_prendas",editar2,original2);
+                    //System.out.println("UPDATE prenda SET "+editar1+" WHERE "+original1);
+                    //System.out.println("UPDATE catalogo_prendas SET "+editar2+" WHERE "+original2);
+                    break;
+                    //System.out.println("interno xoxoxox "+cont+", "+cont2);
+                    //System.out.println(orig.tipoPrenda);
+                }
+                cont2++;
+            }
+            cont++;
+        }
+        con.detener();
+        limpiarTabla(modeloEditarArticulo);
+        limpiarTabla(modeloArticulosOriginal);
+        llenarTabla(modeloEditarArticulo);
+        llenarTabla(modeloArticulosOriginal);
+        //Bu_AD_EA_Edita.setVisible(false);
+    }//GEN-LAST:event_Bu_AD_EA_EditaActionPerformed
+    
+    public void limpiarTabla(ModeloTabla1 Tabla){
+        LinkedList old= Tabla.datos;
+        int a = old.size();
+        a--;
+        for(int i = a; i >= 0; i--){
+            Tabla.removeObject(i);
+        }
+    }
+    public void llenarTabla(ModeloTabla1 Tabla){
+        LinkedList datos = consultaEditP(CB_AD_EA_Gener.getSelectedItem().toString(),Ch_AD_EA_TPren.getSelectedItem(),Ch_AD_EA_Color.getSelectedItem());
+        for(Object v : datos){
+            Tabla.addObject((Generica)v);
+        }
+    }
+    
     private void Bu_AD_FC_AArtiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_FC_AArtiActionPerformed
         VistaPrendasConjunto vp = new VistaPrendasConjunto();
         vp.tipoPrenda = choice1.getSelectedItem();
@@ -1373,87 +1376,11 @@ public class Administrador extends javax.swing.JFrame {
     private void Bu_AD_FC_AConjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_AD_FC_AConjActionPerformed
         LinkedList data = modeloCrearConjunto.datos;
         VistaPrendasConjunto aux;
-        String color = "",marca = "",talla = "",tela = "",tipo = "";
-        String nEsc = TF_AD_FC_NEscu.getText();
-        String typUnif = TF_AD_FC_TUnif.getText();
-        String tallaUnif = TF_AD_FC_TConj.getText();
-        String query = "";
-        query += "'"+nEsc+"',";
-        query += "'"+typUnif+"',";
-        query += "'"+tallaUnif+"',";
-        System.out.println(nEsc + " -> " + typUnif + " -> " + tallaUnif);
         for(Object obj:data){
-            String query1 = query;
             aux = (VistaPrendasConjunto)obj;
-            query1 += "'"+aux.tipoPrenda+"',";
-            query1 += "'"+aux.color+"',";
-            query1 += "'"+aux.marca+"',";
-            query1 += "'"+aux.tela+"',";
-            query1 += "'"+aux.talla+"'";
-            if(!con.consultar("call sp_insert_conjunto ("+query1+")"))
-            {
-                System.out.println("xoxox");
-            }
-            System.out.println(query1);
+            System.out.println(aux.color+" -> "+aux.marca+" -> "+aux.talla+" -> "+aux.tela+" -> "+aux.tipoPrenda);
         }
     }//GEN-LAST:event_Bu_AD_FC_AConjActionPerformed
-
-    private void choice2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice2ItemStateChanged
-        String data = choice2.getSelectedItem();
-        ArrayList<VistaPrendas> prendas = consultar(" Color = '" + data + "'");
-        enabledChoices2(false);
-        limpiarChoices2();
-        iniciarChoices2();
-        enabledChoices2(true);
-        String check = "";
-        for (VistaPrendas vp : prendas) {
-            String aux = vp.talla+vp.tela+vp.marca;
-            if(!check.contains(aux))
-            {
-                choice3.add(vp.talla);
-                choice4.add(vp.tela);
-                choice5.add(vp.marca);
-                check += aux;
-            }
-        }
-    }//GEN-LAST:event_choice2ItemStateChanged
-
-    private void choice3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice3ItemStateChanged
-        String data = choice3.getSelectedItem();
-        ArrayList<VistaPrendas> prendas = consultar(" Talla = '" + data + "'");
-        enabledChoices3(false);
-        limpiarChoices3();
-        iniciarChoices3();
-        enabledChoices3(true);
-        String check = "";
-        for (VistaPrendas vp : prendas) {
-            String aux = vp.tela+vp.marca;
-            if(!check.contains(aux))
-            {
-                choice4.add(vp.tela);
-                choice5.add(vp.marca);
-                check += aux;
-            }
-        }
-    }//GEN-LAST:event_choice3ItemStateChanged
-
-    private void choice4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_choice4ItemStateChanged
-        String data = choice4.getSelectedItem();
-        ArrayList<VistaPrendas> prendas = consultar(" Tela = '" + data + "'");
-        enabledChoices4(false);
-        limpiarChoices4();
-        iniciarChoices4();
-        enabledChoices4(true);
-        String check = "";
-        for (VistaPrendas vp : prendas) {
-            String aux = vp.tela+vp.marca;
-            if(!check.contains(aux))
-            {
-                choice5.add(vp.marca);
-                check += aux;
-            }
-        }
-    }//GEN-LAST:event_choice4ItemStateChanged
     public void insertarConjunto(VistaPrendasConjunto vp){
         String query="";
         query += " Color = '"+vp.color+"'";
@@ -1467,22 +1394,6 @@ public class Administrador extends javax.swing.JFrame {
         }
         
         /*ArrayList<VistaPrendasConjunto> insert = consultar1(query);*/
-    }
-    public ArrayList<Privilegio> consultarPriv(String cond){
-        ArrayList<Privilegio> res = new ArrayList<Privilegio>();
-        try {
-            con.consultar("select * from privilegios");
-            ResultSet rsPriv = con.resultado;
-            while(rsPriv.next()){
-                Privilegio p = new Privilegio();
-                p.id = rsPriv.getInt("idPriv");
-                p.priv = rsPriv.getString("nombre");
-                res.add(p);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            return res;
     }
     public Boolean listaConiente(LinkedList data, VistaPrendasConjunto vp){
         Boolean cond, cond1, cond2, cond3, cond4, cond5;
@@ -1501,6 +1412,7 @@ public class Administrador extends javax.swing.JFrame {
         }
         return false;
     }
+
     public void iniciarChoices1()
     {
         choice2.add("");
@@ -1520,51 +1432,6 @@ public class Administrador extends javax.swing.JFrame {
         choice2.setEnabled(b);
         choice3.setEnabled(b);
         choice4.setEnabled(b);
-        choice5.setEnabled(b);
-    }
-    public void iniciarChoices2()
-    {
-        choice3.add("");
-        choice4.add("");
-        choice5.add("");
-    }
-    public void limpiarChoices2()
-    {
-        choice3.removeAll();
-        choice4.removeAll();
-        choice5.removeAll();
-    }
-    public void enabledChoices2(Boolean b)
-    {
-        choice3.setEnabled(b);
-        choice4.setEnabled(b);
-        choice5.setEnabled(b);
-    }
-    public void iniciarChoices3()
-    {
-        choice4.add("");
-        choice5.add("");
-    }
-    public void limpiarChoices3()
-    {
-        choice4.removeAll();
-        choice5.removeAll();
-    }
-    public void enabledChoices3(Boolean b)
-    {
-        choice4.setEnabled(b);
-        choice5.setEnabled(b);
-    }
-    public void iniciarChoices4()
-    {
-        choice5.add("");
-    }
-    public void limpiarChoices4()
-    {
-        choice5.removeAll();
-    }
-    public void enabledChoices4(Boolean b)
-    {
         choice5.setEnabled(b);
     }
     public ArrayList<VistaPrendasConjunto> consultar1(String cond)
@@ -1613,6 +1480,7 @@ public class Administrador extends javax.swing.JFrame {
             query = "select * from prendas where "+cond;
         }
         try {
+            con.iniciar();
             con.consultar(query);
             ResultSet rsPrenda = con.resultado;
             while(rsPrenda.next())
@@ -1626,11 +1494,13 @@ public class Administrador extends javax.swing.JFrame {
                 aux.id = rsPrenda.getInt("ID");
                 res.add(aux);
             }
+            con.detener();
         } catch (SQLException ex) {
             Logger.getLogger(Administrador.class.getName()).log(Level.SEVERE, null, ex);
         }
         return res;
     }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -1731,8 +1601,6 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JTextField TF_AD_AA_Talla;
     private javax.swing.JTextField TF_AD_AA_Tela;
     private javax.swing.JTextField TF_AD_FC_NEscu;
-    private javax.swing.JTextField TF_AD_FC_NEscu2;
-    private javax.swing.JTextField TF_AD_FC_NEscu3;
     private javax.swing.JTextField TF_AD_FC_PTota;
     private javax.swing.JTextField TF_AD_FC_TConj;
     private javax.swing.JTextField TF_AD_FC_TUnif;
@@ -1742,6 +1610,7 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup4;
     private java.awt.Choice choice1;
     private java.awt.Choice choice2;
+    private java.awt.Choice choice21;
     private java.awt.Choice choice22;
     private java.awt.Choice choice3;
     private java.awt.Choice choice4;
@@ -1749,11 +1618,13 @@ public class Administrador extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton5;
+    private javax.swing.JComboBox jComboBox3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel45;
-    private javax.swing.JLabel jLabel46;
-    private javax.swing.JLabel jLabel47;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel44;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
