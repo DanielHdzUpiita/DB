@@ -2,6 +2,7 @@ package pantallas.de.bd;
 
 import DB.VistaPrendas;
 import ObjetosDB.ConexionBD;
+import java.awt.image.ImageObserver;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,13 +16,10 @@ public class Cliente extends javax.swing.JFrame {
     
     public Cliente() {
         initComponents();
-        iniciarEscolar();
-        iniciarDeVestir();
-        //jComboBox2.addItem("Item 1");
-        //ComboBoxModel jcbm = new ComboBoxModel(new String[]{"1","2"});
-        
-        //jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4" }));
-        //jComboBox2.addItem("1");
+        iniciarEscolar("Genero = 'Escolar'","9");
+        iniciarDeVestir("Genero = 'De Vestir'","9");
+        Bu_Cli_Es_Consu.setVisible(false);
+        Bu_Cli_DV_Consu.setVisible(false);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -143,18 +141,46 @@ public class Cliente extends javax.swing.JFrame {
         Ch_Cli_Es_TPren.setBounds(190, 20, 150, 20);
         Ch_Cli_Es_TPren.getAccessibleContext().setAccessibleName("");
 
+        Ch_Cli_Es_Color.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_Es_ColorItemStateChanged(evt);
+            }
+        });
         PanelEscolar.add(Ch_Cli_Es_Color);
         Ch_Cli_Es_Color.setBounds(190, 61, 150, 20);
+
+        Ch_Cli_Es_Talla.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_Es_TallaItemStateChanged(evt);
+            }
+        });
         PanelEscolar.add(Ch_Cli_Es_Talla);
         Ch_Cli_Es_Talla.setBounds(190, 102, 150, 20);
+
+        Ch_Cli_Es_Marca.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_Es_MarcaItemStateChanged(evt);
+            }
+        });
         PanelEscolar.add(Ch_Cli_Es_Marca);
         Ch_Cli_Es_Marca.setBounds(190, 143, 150, 20);
+
+        Ch_Cli_Es_Tela.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_Es_TelaItemStateChanged(evt);
+            }
+        });
         PanelEscolar.add(Ch_Cli_Es_Tela);
         Ch_Cli_Es_Tela.setBounds(190, 184, 150, 20);
 
         Bu_Cli_Es_Consu.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_Cli_Es_Consu.setForeground(new java.awt.Color(255, 0, 0));
         Bu_Cli_Es_Consu.setText("Consultar");
+        Bu_Cli_Es_Consu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bu_Cli_Es_ConsuActionPerformed(evt);
+            }
+        });
         PanelEscolar.add(Bu_Cli_Es_Consu);
         Bu_Cli_Es_Consu.setBounds(232, 225, 109, 27);
 
@@ -311,28 +337,58 @@ public class Cliente extends javax.swing.JFrame {
         La_Cli_DV_Comen.setBounds(161, 266, 95, 29);
 
         Ch_Cli_DV_TPren.setForeground(new java.awt.Color(0, 153, 0));
+        Ch_Cli_DV_TPren.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_DV_TPrenItemStateChanged(evt);
+            }
+        });
         PanelDeVestir.add(Ch_Cli_DV_TPren);
         Ch_Cli_DV_TPren.setBounds(190, 20, 150, 20);
 
         Ch_Cli_DV_Color.setForeground(new java.awt.Color(0, 153, 0));
+        Ch_Cli_DV_Color.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_DV_ColorItemStateChanged(evt);
+            }
+        });
         PanelDeVestir.add(Ch_Cli_DV_Color);
         Ch_Cli_DV_Color.setBounds(190, 61, 150, 20);
 
         Ch_Cli_DV_Talla.setForeground(new java.awt.Color(0, 153, 0));
+        Ch_Cli_DV_Talla.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_DV_TallaItemStateChanged(evt);
+            }
+        });
         PanelDeVestir.add(Ch_Cli_DV_Talla);
         Ch_Cli_DV_Talla.setBounds(190, 102, 150, 20);
 
         Ch_Cli_DV_Marca.setForeground(new java.awt.Color(0, 153, 0));
+        Ch_Cli_DV_Marca.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_DV_MarcaItemStateChanged(evt);
+            }
+        });
         PanelDeVestir.add(Ch_Cli_DV_Marca);
         Ch_Cli_DV_Marca.setBounds(190, 143, 150, 20);
 
         Ch_Cli_DV_Tela.setForeground(new java.awt.Color(0, 153, 0));
+        Ch_Cli_DV_Tela.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                Ch_Cli_DV_TelaItemStateChanged(evt);
+            }
+        });
         PanelDeVestir.add(Ch_Cli_DV_Tela);
         Ch_Cli_DV_Tela.setBounds(190, 184, 150, 20);
 
         Bu_Cli_DV_Consu.setFont(new java.awt.Font("Snap ITC", 0, 14)); // NOI18N
         Bu_Cli_DV_Consu.setForeground(new java.awt.Color(255, 0, 0));
         Bu_Cli_DV_Consu.setText("Consultar");
+        Bu_Cli_DV_Consu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Bu_Cli_DV_ConsuActionPerformed(evt);
+            }
+        });
         PanelDeVestir.add(Bu_Cli_DV_Consu);
         Bu_Cli_DV_Consu.setBounds(232, 225, 109, 27);
 
@@ -455,34 +511,54 @@ public class Cliente extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void iniciarEscolar()
-    {
+    public void iniciarEscolar(String condiciones,String excepciones){
         try {
-            ArrayList<VistaPrendas> pren = consultar("Genero = 'Escolar'");
-            Ch_Cli_Es_TPren.add("");
-            Ch_Cli_Es_Color.add("");
-            Ch_Cli_Es_Talla.add("");
-            Ch_Cli_Es_Marca.add("");
-            Ch_Cli_Es_Tela.add("");
+            ArrayList<VistaPrendas> pren = consultar(condiciones);
+            String[] excep = {"1","2","3","4","5"};
+            if(!excepciones.contains(excep[0])){
+                System.out.println("Entro 1");
+                Ch_Cli_Es_TPren.removeAll();
+                Ch_Cli_Es_TPren.add("");
+            }
+            if(!excepciones.contains(excep[1])){
+                System.out.println("Entro 2");
+                Ch_Cli_Es_Color.removeAll();
+                Ch_Cli_Es_Color.add("");
+            }
+            if(!excepciones.contains(excep[2])){
+                System.out.println("Entro 3");
+                Ch_Cli_Es_Talla.removeAll();
+                Ch_Cli_Es_Talla.add("");
+            }
+            if(!excepciones.contains(excep[3])){
+                System.out.println("Entro 4");
+                Ch_Cli_Es_Marca.removeAll();
+                Ch_Cli_Es_Marca.add("");
+            }
+            if(!excepciones.contains(excep[4])){
+                System.out.println("Entro 5");
+                Ch_Cli_Es_Tela.removeAll();
+                Ch_Cli_Es_Tela.add("");
+            }
             String[] check = new String[] {"","","","",""};
             for(VistaPrendas p : pren){
-                if(!check[0].contains(p.tipoPrenda)){
+                if(!check[0].contains(p.tipoPrenda) && !excepciones.contains(excep[0])){
                     Ch_Cli_Es_TPren.add(p.tipoPrenda);
                     check[0] += p.tipoPrenda;
                 }
-                if(!check[1].contains(p.color)){
+                if(!check[1].contains(p.color) && !excepciones.contains(excep[1])){
                     Ch_Cli_Es_Color.add(p.color);
                     check[1] += p.color;
                 }
-                if(!check[2].contains(p.talla)){
+                if(!check[2].contains(p.talla) && !excepciones.contains(excep[2])){
                     Ch_Cli_Es_Talla.add(p.talla);
                     check[2] += p.talla;
                 }
-                if(!check[3].contains(p.marca)){
+                if(!check[3].contains(p.marca) && !excepciones.contains(excep[3])){
                     Ch_Cli_Es_Marca.add(p.marca);
                     check[3] += p.marca;
                 }
-                if(!check[4].contains(p.tela)){
+                if(!check[4].contains(p.tela) && !excepciones.contains(excep[4])){
                     Ch_Cli_Es_Tela.add(p.tela);
                     check[4] += p.tela;
                 }
@@ -491,35 +567,49 @@ public class Cliente extends javax.swing.JFrame {
             Logger.getLogger(Vendedor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void iniciarDeVestir()
-    {
+    public void iniciarDeVestir(String condiciones,String excepciones){
         try {
-            ArrayList<VistaPrendas> pren = consultar("Genero = 'De Vestir'");
-            Ch_Cli_DV_TPren.add("");
-            Ch_Cli_DV_Color.add("");
-            Ch_Cli_DV_Talla.add("");
-            Ch_Cli_DV_Marca.add("");
-            Ch_Cli_DV_Tela.add("");
+            ArrayList<VistaPrendas> pren = consultar(condiciones);
+            String[] excep = {"1","2","3","4","5"};
+            if(!excepciones.contains(excep[0])){
+                Ch_Cli_DV_TPren.removeAll();
+                Ch_Cli_DV_TPren.add("");
+            }
+            if(!excepciones.contains(excep[1])){
+                Ch_Cli_DV_Color.removeAll();
+                Ch_Cli_DV_Color.add("");
+            }
+            if(!excepciones.contains(excep[2])){
+                Ch_Cli_DV_Talla.removeAll();
+                Ch_Cli_DV_Talla.add("");
+            }
+            if(!excepciones.contains(excep[3])){
+                Ch_Cli_DV_Marca.removeAll();
+                Ch_Cli_DV_Marca.add("");
+            }
+            if(!excepciones.contains(excep[4])){
+                Ch_Cli_DV_Tela.removeAll();
+                Ch_Cli_DV_Tela.add("");
+            }
             String[] check = new String[] {"","","","",""};
             for(VistaPrendas p : pren){
-                if(!check[0].contains(p.tipoPrenda)){
+                if(!check[0].contains(p.tipoPrenda) && !excepciones.contains(excep[0])){
                     Ch_Cli_DV_TPren.add(p.tipoPrenda);
                     check[0] += p.tipoPrenda;
                 }
-                if(!check[1].contains(p.color)){
+                if(!check[1].contains(p.color) && !excepciones.contains(excep[1])){
                     Ch_Cli_DV_Color.add(p.color);
                     check[1] += p.color;
                 }
-                if(!check[2].contains(p.talla)){
+                if(!check[2].contains(p.talla) && !excepciones.contains(excep[2])){
                     Ch_Cli_DV_Talla.add(p.talla);
                     check[2] += p.talla;
                 }
-                if(!check[3].contains(p.marca)){
+                if(!check[3].contains(p.marca) && !excepciones.contains(excep[3])){
                     Ch_Cli_DV_Marca.add(p.marca);
                     check[3] += p.marca;
                 }
-                if(!check[4].contains(p.tela)){
+                if(!check[4].contains(p.tela) && !excepciones.contains(excep[4])){
                     Ch_Cli_DV_Tela.add(p.tela);
                     check[4] += p.tela;
                 }
@@ -527,6 +617,30 @@ public class Cliente extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(Vendedor.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    public String[] crearConsulta(String genero,String tPrenda,String color,String talla,String marca,String tela){        
+        String[] query = new String[] {genero,"9"};
+        if(!tPrenda.equals("")){
+            query[0] += " and tipo_de_prenda = '"+tPrenda+"'";
+            query[1] += "1";
+        }
+        if(!color.equals("")){
+            query[0] += " and color = '"+color+"'";
+            query[1] += "2";
+        }
+        if(!talla.equals("")){
+            query[0] += " and talla = '"+talla+"'";
+            query[1] += "3";
+        }
+        if(!marca.equals("")){
+            query[0] += " and marca = '"+marca+"'";
+            query[1] += "4";
+        }
+        if(!tela.equals("")){
+            query[0] += " and tela = '"+tela+"'";
+            query[1] += "5";
+        }
+        return query;
     }
     
     public ArrayList<VistaPrendas> consultar(String cond){
@@ -559,10 +673,15 @@ public class Cliente extends javax.swing.JFrame {
         }
         return res;
     }
+    
 
 
     private void Bu_Cli_CS_CSesiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_Cli_CS_CSesiActionPerformed
-        Connection conexion = null;
+        this.setVisible(false);
+        LogIn Log = new LogIn();
+        Log.setVisible(true);
+        this.dispose();
+        /*Connection conexion = null;
         conexion=ConexionMySQL.conectar();
         Statement consulta;
         try {
@@ -600,18 +719,147 @@ public class Cliente extends javax.swing.JFrame {
             this.dispose();
         } catch (SQLException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }//GEN-LAST:event_Bu_Cli_CS_CSesiActionPerformed
 
     private void Ch_Cli_Es_TPrenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_Es_TPrenItemStateChanged
-        //iniciarEscolar();
-        /*        iniciarEscolar(CB_AD_EA_Gener.getSelectedIndex(),Ch_AD_EA_TPren.getSelectedItem(),"");
-        if(Ch_AD_EA_TPren.getSelectedItem().equals("")){
-            Ch_AD_EA_Color.setEnabled(false);
+        String[] consulta = crearConsulta("Genero = 'Escolar'",Ch_Cli_Es_TPren.getSelectedItem(),Ch_Cli_Es_Color.getSelectedItem(),Ch_Cli_Es_Talla.getSelectedItem(),Ch_Cli_Es_Marca.getSelectedItem(),Ch_Cli_Es_Tela.getSelectedItem());
+        iniciarEscolar(consulta[0],consulta[1]);
+        System.out.println(consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_Es_Consu.setVisible(true);
         }else{
-            Ch_AD_EA_Color.setEnabled(true);
-        }*/
+            Bu_Cli_Es_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
     }//GEN-LAST:event_Ch_Cli_Es_TPrenItemStateChanged
+
+    private void Ch_Cli_Es_ColorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_Es_ColorItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'Escolar'",Ch_Cli_Es_TPren.getSelectedItem(),Ch_Cli_Es_Color.getSelectedItem(),Ch_Cli_Es_Talla.getSelectedItem(),Ch_Cli_Es_Marca.getSelectedItem(),Ch_Cli_Es_Tela.getSelectedItem());
+        iniciarEscolar(consulta[0],consulta[1]);
+        System.out.println(consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_Es_Consu.setVisible(true);
+        }else{
+            Bu_Cli_Es_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_Es_ColorItemStateChanged
+
+    private void Ch_Cli_Es_TallaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_Es_TallaItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'Escolar'",Ch_Cli_Es_TPren.getSelectedItem(),Ch_Cli_Es_Color.getSelectedItem(),Ch_Cli_Es_Talla.getSelectedItem(),Ch_Cli_Es_Marca.getSelectedItem(),Ch_Cli_Es_Tela.getSelectedItem());
+        iniciarEscolar(consulta[0],consulta[1]);
+        System.out.println(consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_Es_Consu.setVisible(true);
+        }else{
+            Bu_Cli_Es_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_Es_TallaItemStateChanged
+
+    private void Ch_Cli_Es_MarcaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_Es_MarcaItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'Escolar'",Ch_Cli_Es_TPren.getSelectedItem(),Ch_Cli_Es_Color.getSelectedItem(),Ch_Cli_Es_Talla.getSelectedItem(),Ch_Cli_Es_Marca.getSelectedItem(),Ch_Cli_Es_Tela.getSelectedItem());
+        iniciarEscolar(consulta[0],consulta[1]);
+        System.out.println(consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_Es_Consu.setVisible(true);
+        }else{
+            Bu_Cli_Es_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_Es_MarcaItemStateChanged
+
+    private void Ch_Cli_Es_TelaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_Es_TelaItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'Escolar'",Ch_Cli_Es_TPren.getSelectedItem(),Ch_Cli_Es_Color.getSelectedItem(),Ch_Cli_Es_Talla.getSelectedItem(),Ch_Cli_Es_Marca.getSelectedItem(),Ch_Cli_Es_Tela.getSelectedItem());
+        iniciarEscolar(consulta[0],consulta[1]);
+        System.out.println(consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_Es_Consu.setVisible(true);
+        }else{
+            Bu_Cli_Es_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_Es_TelaItemStateChanged
+
+    private void Ch_Cli_DV_TPrenItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_DV_TPrenItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'De Vestir'",Ch_Cli_DV_TPren.getSelectedItem(),Ch_Cli_DV_Color.getSelectedItem(),Ch_Cli_DV_Talla.getSelectedItem(),Ch_Cli_DV_Marca.getSelectedItem(),Ch_Cli_DV_Tela.getSelectedItem());
+        iniciarDeVestir(consulta[0],consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_DV_Consu.setVisible(true);
+        }else{
+            Bu_Cli_DV_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_DV_TPrenItemStateChanged
+
+    private void Ch_Cli_DV_ColorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_DV_ColorItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'De Vestir'",Ch_Cli_DV_TPren.getSelectedItem(),Ch_Cli_DV_Color.getSelectedItem(),Ch_Cli_DV_Talla.getSelectedItem(),Ch_Cli_DV_Marca.getSelectedItem(),Ch_Cli_DV_Tela.getSelectedItem());
+        iniciarDeVestir(consulta[0],consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_DV_Consu.setVisible(true);
+        }else{
+            Bu_Cli_DV_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_DV_ColorItemStateChanged
+
+    private void Ch_Cli_DV_TallaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_DV_TallaItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'De Vestir'",Ch_Cli_DV_TPren.getSelectedItem(),Ch_Cli_DV_Color.getSelectedItem(),Ch_Cli_DV_Talla.getSelectedItem(),Ch_Cli_DV_Marca.getSelectedItem(),Ch_Cli_DV_Tela.getSelectedItem());
+        iniciarDeVestir(consulta[0],consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_DV_Consu.setVisible(true);
+        }else{
+            Bu_Cli_DV_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_DV_TallaItemStateChanged
+
+    private void Ch_Cli_DV_MarcaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_DV_MarcaItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'De Vestir'",Ch_Cli_DV_TPren.getSelectedItem(),Ch_Cli_DV_Color.getSelectedItem(),Ch_Cli_DV_Talla.getSelectedItem(),Ch_Cli_DV_Marca.getSelectedItem(),Ch_Cli_DV_Tela.getSelectedItem());
+        iniciarDeVestir(consulta[0],consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_DV_Consu.setVisible(true);
+        }else{
+            Bu_Cli_DV_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_DV_MarcaItemStateChanged
+
+    private void Ch_Cli_DV_TelaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_Ch_Cli_DV_TelaItemStateChanged
+        String[] consulta = crearConsulta("Genero = 'De Vestir'",Ch_Cli_DV_TPren.getSelectedItem(),Ch_Cli_DV_Color.getSelectedItem(),Ch_Cli_DV_Talla.getSelectedItem(),Ch_Cli_DV_Marca.getSelectedItem(),Ch_Cli_DV_Tela.getSelectedItem());
+        iniciarDeVestir(consulta[0],consulta[1]);
+        if(consulta[1].contains("12345")){
+            Bu_Cli_DV_Consu.setVisible(true);
+        }else{
+            Bu_Cli_DV_Consu.setVisible(false);
+        }
+        //System.out.println(consulta[0]+consulta[1]);
+    }//GEN-LAST:event_Ch_Cli_DV_TelaItemStateChanged
+
+    private void Bu_Cli_Es_ConsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_Cli_Es_ConsuActionPerformed
+        if(!TF_Cli_Es_Preci.getText().equals(" $ ")){
+            System.out.println("Limpiar");
+            new Cliente().setVisible(true);
+            iniciarEscolar("Genero = 'Escolar'","");
+            
+            Bu_Cli_Es_Consu.setText("Consultar");
+            Bu_Cli_Es_Consu.setVisible(false);
+            TF_Cli_Es_Preci.setText(" $ ");
+            
+        }else{
+            String[] consulta = crearConsulta("Genero = 'Escolar'",Ch_Cli_Es_TPren.getSelectedItem(),Ch_Cli_Es_Color.getSelectedItem(),Ch_Cli_Es_Talla.getSelectedItem(),Ch_Cli_Es_Marca.getSelectedItem(),Ch_Cli_Es_Tela.getSelectedItem());
+            ArrayList<VistaPrendas> busqueda = consultar(consulta[0]);
+            TF_Cli_Es_Preci.setText("$ "+Float.toString(busqueda.get(0).precio));
+            Bu_Cli_Es_Consu.setText("Limpiar");
+        }
+    }//GEN-LAST:event_Bu_Cli_Es_ConsuActionPerformed
+
+    private void Bu_Cli_DV_ConsuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Bu_Cli_DV_ConsuActionPerformed
+        String[] consulta = crearConsulta("Genero = 'De Vestir'",Ch_Cli_DV_TPren.getSelectedItem(),Ch_Cli_DV_Color.getSelectedItem(),Ch_Cli_DV_Talla.getSelectedItem(),Ch_Cli_DV_Marca.getSelectedItem(),Ch_Cli_DV_Tela.getSelectedItem());
+        ArrayList<VistaPrendas> busqueda = consultar(consulta[0]);
+        TF_Cli_DV_Preci.setText("$ "+Float.toString(busqueda.get(0).precio));
+    }//GEN-LAST:event_Bu_Cli_DV_ConsuActionPerformed
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
